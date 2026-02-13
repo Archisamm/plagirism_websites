@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Copyright</title>
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+<nav id="navbar"></nav>
+
+<div class="page-container">
+  <h1 class="page-title">©️ Copyright Guide</h1>
+  <p class="page-desc">How professionals avoid copyright and plagiarism risk.</p>
+
+  <div class="card">
+    <h2>Best Practices</h2>
+    <ul style="line-height:1.8;">
+      <li>Always cite sources when using other authors’ ideas.</li>
+      <li>Avoid copying long exact sentences from websites/papers.</li>
+      <li>Rewrite using your own understanding (paraphrasing).</li>
+      <li>Use quotes only for small parts.</li>
+      <li>Maintain originality score (below 15% recommended).</li>
+    </ul>
+  </div>
+</div>
+
+<script src="{% static 'js/navbar.js' %}"></script>
+</body>
+</html>

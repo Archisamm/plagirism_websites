@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BRI Plagiarism Dashboard</title>
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+</head>
+
+<body>
+  <nav id="navbar"></nav>
+
+  <div class="content">
+    <h1>Dashboard</h1>
+    <h3 id="roleHeading" style="margin-top:6px;"></h3>
+    <p>Welcome to your workspace</p>
+  </div>
+
+  <div class="container">
+    <h1>BRI Plagiarism Detection</h1>
+
+    <div class="upload-box">
+      <input type="file" id="fileInput">
+      <button id="uploadBtn">Analyze Document</button>
+    </div>
+
+    <div class="status" id="status">Waiting for upload...</div>
+
+    <div class="result hidden" id="resultBox">
+      <h2>Analysis Result</h2>
+      <p><strong>Plagiarism Percentage:</strong> <span id="percentage"></span>%</p>
+      <p><strong>Verdict:</strong> <span id="verdict"></span></p>
+
+      <button id="downloadBtn" class="download-btn">
+        Download PDF Report
+      </button>
+    </div>
+  </div>
+
+  <script src="{% static 'js/navbar.js' %}"></script>
+  <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Results</title>
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+<nav id="navbar"></nav>
+
+<div class="page-container">
+  <h1 class="page-title">✅ Results</h1>
+  <p class="page-desc">Recent plagiarism results saved in database.</p>
+
+  <div class="card">
+    <p id="status">Loading...</p>
+    <div id="resultsBox"></div>
+  </div>
+</div>
+
+<script src="{% static 'js/navbar.js' %}"></script>
+<script src="{% static 'js/results.js' %}"></script>
+</body>
+</html>

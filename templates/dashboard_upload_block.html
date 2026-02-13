@@ -1,0 +1,20 @@
+<div class="container">
+  <h1>BRI Plagiarism Detection</h1>
+
+  <div class="upload-box">
+    <input type="file" id="fileInput">
+    <button id="uploadBtn">Analyze Document</button>
+  </div>
+
+  <div class="status" id="status">Waiting for upload...</div>
+
+  <div class="result hidden" id="resultBox">
+    <h2>Analysis Result</h2>
+    <p><strong>Plagiarism Percentage:</strong> <span id="percentage"></span>%</p>
+    <p><strong>Verdict:</strong> <span id="verdict"></span></p>
+
+    <button id="downloadBtn" class="download-btn">
+      Download PDF Report
+    </button>
+  </div>
+</div>

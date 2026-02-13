@@ -1,0 +1,148 @@
+/* ===== LAYOUT ===== */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 22px;
+  padding: 22px;
+}
+
+@media(max-width:900px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+  .sidebar{
+    display:none;
+  }
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 220px;
+  background: #111827;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-item {
+  color: #e5e7eb;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.side-item:hover,
+.side-item.active {
+  background: #2563eb;
+  color: white;
+}
+
+/* ===== MAIN ===== */
+.main {
+  flex: 1;
+  padding: 30px;
+  background: #f4f6f8;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  padding: 50px;
+  border-radius: 16px;
+}
+
+.hero h1 {
+  font-size: 36px;
+}
+
+.hero p {
+  margin-top: 10px;
+  max-width: 600px;
+}
+
+.hero-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 22px;
+  background: white;
+  color: #1e40af;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* ===== FEATURES ===== */
+.features {
+  margin-top: 40px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.feature-card,
+.role-card {
+  background: linear-gradient(180deg,#ffffff,#f8fafc);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+
+  transition: all .35s ease;
+}
+
+.feature-card:hover,
+.role-card:hover {
+  transform: translateX(-6px) translateY(-6px);
+  box-shadow: 0 20px 40px rgba(37,99,235,.25);
+}
+
+/* ===== ROLES ===== */
+.roles {
+  margin-top: 40px;
+}
+
+.role-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* .role-card {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  text-align: center;
+} */
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 900px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .side-item {
+    white-space: nowrap;
+    margin-right: 8px;
+  }
+}

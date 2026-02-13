@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Researcher Similarity</title>
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+<nav id="navbar"></nav>
+
+<div class="page-container">
+  <h1 class="page-title">📊 Similarity Index</h1>
+  <p class="page-desc">Recent similarity reports from database.</p>
+
+  <div id="simList" class="card-box">Loading...</div>
+</div>
+
+<script src="{% static 'js/navbar.js' %}"></script>
+<script>
+async function loadSimilarity(){
+  const box = document.getElementById("simList");
+  try{
+    const res = await fetch("/api/recent-results/");
+    const data = await res.json();
+
+    if(!data.results || !data.results.length){
+      box.innerHTML = "<p>No reports yet.</p>";
+      return;
+    }
+
+    box.innerHTML = data.results.map(r => `
+      <div class="result-card">
+        <h3>${r.title}</h3>
+        <p><b>${r.plagiarism_percentage}%</b> — ${r.verdict}</p>
+        <small>${r.created_at}</small>
+      </div>
+    `).join("");
+
+  }catch(e){
+    box.innerHTML = "<p>Error loading similarity reports</p>";
+  }
+}
+loadSimilarity();
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BRI AI Plagiarism Detection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/home-ai.css' %}">
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+  <div class="brand">BRI AI</div>
+
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a class="btn-primary" href="/login/">Get Started</a></li>
+  </ul>
+</nav>
+
+<div class="layout">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <a href="#hero">🏠 Overview</a>
+    <a href="#what">📘 What is Plagiarism?</a>
+    <a href="#how">🧠 How AI Works</a>
+    <a href="#features">✨ Features</a>
+    <a href="#students">🎓 Students</a>
+    <a href="#professionals">💼 Professionals</a>
+    <a href="#researchers">🔬 Researchers</a>
+    <a href="#video">🎥 Demo</a>
+    <a href="#faq">❓ FAQ</a>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section id="hero" class="hero">
+      <h1>AI-Powered Plagiarism Detection</h1>
+      <p>
+        Upload documents or paste text to check originality instantly.
+        Smart analysis. Clear reports. Easy understanding.
+      </p>
+      <a href="/login/" class="hero-btn">Start Checking Now</a>
+    </section>
+
+    <!-- WHAT IS PLAGIARISM -->
+    <section id="what" class="split">
+      <div class="text">
+        <h2>What is Plagiarism?</h2>
+        <p>
+          Plagiarism means copying someone else's work without giving credit.
+          This includes copy-paste, small word changes, or rewriting ideas.
+        </p>
+        <p>
+          Even if words are changed slightly, the meaning can still be the same.
+          Our AI detects these similarities.
+        </p>
+      </div>
+      <div class="image">
+        <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da" alt="Plagiarism concept">
+      </div>
+    </section>
+
+    <!-- HOW AI WORKS -->
+    <section id="how" class="center-section">
+      <h2>How AI Detects Plagiarism</h2>
+      <div class="steps">
+        <div class="step">1️⃣ Reads the text</div>
+        <div class="step">2️⃣ Cleans unnecessary words</div>
+        <div class="step">3️⃣ Breaks into sentences</div>
+        <div class="step">4️⃣ Compares with database</div>
+        <div class="step">5️⃣ Calculates similarity score</div>
+        <div class="step">6️⃣ Shows visual report</div>
+      </div>
+      <p class="small-note">
+        NLP (Natural Language Processing) helps the system understand text like humans do.
+      </p>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="feature-section">
+      <h2>Powerful Features</h2>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b">
+          <h3>Multi Format Support</h3>
+          <p>Upload PDF, DOCX or paste text directly.</p>
+        </div>
+
+        <div class="feature-card">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71">
+          <h3>Visual Reports</h3>
+          <p>Pie charts and clear plagiarism percentage.</p>
+        </div>
+
+        <div class="feature-card">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475">
+          <h3>Smart AI Matching</h3>
+          <p>Detects identical, minor and paraphrased content.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENTS -->
+    <section id="students" class="split">
+      <div class="text">
+        <h2>For Students</h2>
+        <p>Check assignments before submission and avoid accidental plagiarism.</p>
+      </div>
+      <div class="image">
+        <img src="https://images.unsplash.com/photo-1584697964358-3e14ca57658b">
+      </div>
+    </section>
+
+    <!-- PROFESSIONALS -->
+    <section id="professionals" class="split reverse">
+      <div class="text">
+        <h2>For Professionals</h2>
+        <p>Ensure blogs, marketing content, and reports are original.</p>
+      </div>
+      <div class="image">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d">
+      </div>
+    </section>
+
+    <!-- RESEARCHERS -->
+    <section id="researchers" class="split">
+      <div class="text">
+        <h2>For Researchers</h2>
+        <p>Validate originality of research papers and theses.</p>
+      </div>
+      <div class="image">
+        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d">
+      </div>
+    </section>
+
+    <!-- VIDEO -->
+    <section id="video" class="center-section">
+      <h2>See How It Works</h2>
+      <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+      <h2>Frequently Asked Questions</h2>
+      <p><strong>Is my data saved?</strong> No, your content is secure.</p>
+      <p><strong>Is this free?</strong> Local checking is free.</p>
+      <p><strong>Does it check internet?</strong> Global version coming soon.</p>
+    </section>
+
+    <footer class="footer">
+      <p>© 2026 BRI AI Plagiarism Detection</p>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Role | BRI</title>
+  <link rel="stylesheet" href="{% static 'css/roles.css' %}">
+</head>
+<body>
+
+<div class="container">
+  <h1>Select Your Role</h1>
+  <p class="subtitle">This will customize your dashboard & navbar</p>
+
+  <div class="cards">
+
+    <div class="card" onclick="setRole('student')">
+      <h2>🎓 Student</h2>
+      <p>Assignments, uploads, results</p>
+      <button>Select</button>
+    </div>
+
+    <div class="card" onclick="setRole('professional')">
+      <h2>💼 Professional</h2>
+      <p>Originality checks & copyright</p>
+      <button>Select</button>
+    </div>
+
+    <div class="card" onclick="setRole('researcher')">
+      <h2>🔬 Researcher</h2>
+      <p>Similarity & citations</p>
+      <button>Select</button>
+    </div>
+
+  </div>
+
+  <p id="status" style="text-align:center;margin-top:20px;"></p>
+</div>
+
+<script src="{% static 'js/select_role.js' %}"></script>
+</body>
+</html>

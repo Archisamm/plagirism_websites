@@ -1,0 +1,153 @@
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:#f5f9ff;
+  scroll-behavior:smooth;
+}
+
+.navbar{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:rgba(10,20,40,0.85);
+  backdrop-filter:blur(10px);
+  display:flex;
+  justify-content:space-between;
+  padding:14px 30px;
+  color:white;
+  z-index:1000;
+}
+
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:20px;
+}
+
+.nav-links a{
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.btn-primary{
+  background:#3b82f6;
+  padding:6px 12px;
+  border-radius:6px;
+}
+
+.layout{
+  display:flex;
+  margin-top:70px;
+}
+
+.sidebar{
+  width:220px;
+  background:#0f172a;
+  padding:20px;
+  position:sticky;
+  top:70px;
+  height:100vh;
+}
+
+.sidebar a{
+  display:block;
+  color:#cbd5e1;
+  padding:10px;
+  text-decoration:none;
+  border-radius:6px;
+}
+
+.sidebar a:hover{
+  background:#1e293b;
+  color:white;
+}
+
+.main{
+  flex:1;
+  padding:40px;
+}
+
+.hero{
+  text-align:center;
+  padding:80px 20px;
+  background:linear-gradient(135deg,#3b82f6,#06b6d4);
+  color:white;
+  border-radius:12px;
+}
+
+.hero-btn{
+  background:white;
+  color:#3b82f6;
+  padding:10px 20px;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.split{
+  display:flex;
+  gap:40px;
+  margin:80px 0;
+  align-items:center;
+}
+
+.split.reverse{
+  flex-direction:row-reverse;
+}
+
+.split img{
+  width:100%;
+  max-width:400px;
+  border-radius:12px;
+}
+
+.center-section{
+  text-align:center;
+  margin:80px 0;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+.feature-card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.08);
+  transition:transform .3s;
+}
+
+.feature-card:hover{
+  transform:translateY(-10px);
+}
+
+.feature-card img{
+  width:100%;
+  border-radius:10px;
+}
+
+.steps{
+  display:grid;
+  gap:10px;
+}
+
+.step{
+  background:#e0f2fe;
+  padding:12px;
+  border-radius:8px;
+}
+
+.faq{
+  margin:80px 0;
+}
+
+.footer{
+  text-align:center;
+  padding:20px;
+  background:#0f172a;
+  color:white;
+}

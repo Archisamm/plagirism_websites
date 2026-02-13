@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+</head>
+<body>
+
+<nav id="navbar"></nav>
+
+<div class="page-container">
+
+  <h1 class="page-title">🎓 Student Dashboard</h1>
+  <p class="page-desc">Upload assignments and check plagiarism.</p>
+
+  <!-- ✅ Your existing analyzer block -->
+  <div class="container">
+    <h1>BRI Plagiarism Detection</h1>
+
+    <div class="upload-box">
+      <input type="file" id="fileInput">
+      <button id="uploadBtn">Analyze Document</button>
+    </div>
+
+    <div class="status" id="status">Waiting for upload...</div>
+
+    <div class="result hidden" id="resultBox">
+      <h2>Analysis Result</h2>
+      <p><strong>Plagiarism Percentage:</strong> <span id="percentage"></span>%</p>
+      <p><strong>Verdict:</strong> <span id="verdict"></span></p>
+
+      <button id="downloadBtn" class="download-btn">
+        Download PDF Report
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script src="{% static 'js/navbar.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Reports</title>
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+<nav id="navbar"></nav>
+
+<div class="page-container">
+  <h1 class="page-title">📄 Reports</h1>
+  <p class="page-desc">Download plagiarism PDF reports here.</p>
+
+  <div class="card">
+    <p id="status">Loading...</p>
+    <div id="reportsBox"></div>
+  </div>
+</div>
+
+<script src="{% static 'js/navbar.js' %}"></script>
+<script src="{% static 'js/reports.js' %}"></script>
+</body>
+</html>

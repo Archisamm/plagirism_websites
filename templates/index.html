@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome | Plagiarism Detection</title>
+  <link rel="stylesheet" href="{% static 'css/roles.css' %}">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Welcome to Plagiarism Detection Platform</h1>
+    <p class="subtitle">Choose your role to get a personalized experience</p>
+
+    <div class="cards">
+
+      <div class="card" onclick="selectRole('student')">
+        <h2>🎓 Student</h2>
+        <p>Check assignments for plagiarism and improve originality.</p>
+        <button>Register as Student</button>
+      </div>
+
+      <div class="card" onclick="selectRole('professional')">
+        <h2>💼 Professional</h2>
+        <p>Ensure content originality and copyright safety.</p>
+        <button>Register as Professional</button>
+      </div>
+
+      <div class="card" onclick="selectRole('researcher')">
+        <h2>🔬 Researcher</h2>
+        <p>Maintain academic integrity and research quality.</p>
+        <button>Register as Researcher</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="{% static 'js/roles.js' %}"></script>
+</body>
+</html>

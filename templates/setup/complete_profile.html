@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Complete Profile</title>
+  <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+</head>
+<body>
+
+<div class="signup-container">
+  <h2>Complete Your Profile</h2>
+
+  <input type="text" id="display_name" placeholder="Username (display name)" />
+
+  <select id="role">
+    <option value="">Choose Category</option>
+    <option value="student">Student</option>
+    <option value="professional">Professional</option>
+    <option value="researcher">Researcher</option>
+  </select>
+
+  <input type="text" id="institution" placeholder="Institution (optional)" />
+  <input type="text" id="phone" placeholder="Phone (optional)" />
+  <textarea id="bio" placeholder="Bio (optional)" style="width:100%;height:90px;"></textarea>
+
+  <button class="signup-btn" onclick="saveProfile()">Save Profile</button>
+</div>
+
+<script src="{% static 'js/profile.js' %}"></script>
+</body>
+</html>

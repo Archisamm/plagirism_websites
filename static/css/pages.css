@@ -1,0 +1,368 @@
+/* ==================================================
+   GLOBAL
+================================================== */
+
+body{
+ font-family:"Segoe UI",Arial,sans-serif;
+ background:#f4f6f8;
+ margin:0;
+ padding:0;
+}
+
+.page-container{
+ width:92%;
+ max-width:1150px;
+ margin:35px auto;
+}
+
+.page-title{
+ font-size:28px;
+ font-weight:800;
+}
+
+.page-desc{
+ margin-top:8px;
+ font-size:14px;
+ color:#6b7280;
+}
+
+/* ==================================================
+   GRID
+================================================== */
+
+.grid-2{
+ display:grid;
+ grid-template-columns:1.1fr .9fr;
+ gap:18px;
+ margin-top:22px;
+}
+
+@media(max-width:900px){
+ .grid-2{grid-template-columns:1fr;}
+}
+
+/* ==================================================
+   CARDS
+================================================== */
+
+.card,.right-panel{
+ background:#fff;
+ border-radius:16px;
+ padding:18px;
+ box-shadow:0 4px 20px rgba(0,0,0,.07);
+}
+
+/* ==================================================
+   INPUT
+================================================== */
+
+.textarea-box{
+ width:100%;
+ height:260px;
+ resize:vertical;
+ font-size:14px;
+ padding:14px;
+ border-radius:12px;
+ border:1px solid #e5e7eb;
+ background:#fafafa;
+}
+
+.textarea-box:focus{
+ border-color:#2563eb;
+ outline:none;
+ background:#fff;
+}
+
+/* ==================================================
+   BUTTONS
+================================================== */
+
+button{
+ border:none;
+ border-radius:12px;
+ padding:10px;
+ font-weight:700;
+ cursor:pointer;
+ transition:.25s;
+ width:100%;
+}
+
+button:hover{transform:scale(1.03);}
+button:disabled{opacity:.7;cursor:not-allowed;}
+
+.btn-primary{background:#2563eb;color:#fff;}
+.btn-gray{background:#111827;color:#fff;}
+
+/* ==================================================
+   STATUS
+================================================== */
+
+#status{
+ margin-top:14px;
+ padding:10px;
+ border-radius:10px;
+ background:#f1f5f9;
+ font-weight:600;
+}
+
+/* ==================================================
+   SCORE RING
+================================================== */
+
+.score-card{
+ padding:16px;
+ border-radius:16px;
+ background:#f8fafc;
+ border:1px solid #e5e7eb;
+}
+
+.circle-wrap{
+ position:relative;
+ width:140px;
+ height:140px;
+ margin:auto;
+}
+
+.progress-ring{
+ transform:rotate(-90deg);
+}
+
+.ring-bg{
+ fill:none;
+ stroke:#e5e7eb;
+ stroke-width:12;
+}
+
+.ring-progress{
+ fill:none;
+ stroke:#2563eb;
+ stroke-width:12;
+ stroke-linecap:round;
+ stroke-dasharray:377;
+ stroke-dashoffset:377;
+ transition:.8s ease;
+}
+
+.score-text{
+ position:absolute;
+ inset:0;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+}
+
+.score-main{
+ font-size:30px;
+ font-weight:900;
+}
+
+#verdictText{
+ font-weight:700;
+ color:#374151;
+ transition:.3s;
+}
+
+/* ==================================================
+   PULSE
+================================================== */
+
+.pulse{
+ animation:pulse .6s ease infinite alternate;
+}
+
+@keyframes pulse{
+ from{transform:scale(1);}
+ to{transform:scale(1.15);}
+}
+
+/* ==================================================
+   PIE CHART
+================================================== */
+
+canvas{
+ display:block;
+ margin:12px auto;
+ animation:fade .5s ease;
+}
+
+@keyframes fade{
+ from{opacity:0;transform:scale(.9);}
+ to{opacity:1;}
+}
+
+/* ==================================================
+   BREAKDOWN
+================================================== */
+
+.breakdown{
+ list-style:none;
+ padding:0;
+ margin-top:16px;
+}
+
+.breakdown li{
+ padding:10px;
+ margin-bottom:8px;
+ border-radius:10px;
+ background:#f8fafc;
+ border:1px solid #e5e7eb;
+ font-weight:700;
+ transition:.3s;
+ opacity:.8;
+}
+
+.breakdown li.active{
+ transform:scale(1.08);
+ background:#eff6ff;
+ box-shadow:0 0 0 3px rgba(37,99,235,.15);
+ opacity:1;
+}
+
+.breakdown li.done{
+ background:#ecfeff;
+ border-color:#06b6d4;
+ opacity:1;
+}
+
+/* ==================================================
+   SOURCES
+================================================== */
+
+.match-card{
+ padding:12px;
+ border-radius:12px;
+ border:1px solid #e5e7eb;
+ margin-top:10px;
+ background:#fff;
+}
+
+.match-head{
+ display:flex;
+ justify-content:space-between;
+ margin-bottom:6px;
+}
+
+.badge{
+ padding:4px 10px;
+ border-radius:999px;
+ background:#2563eb;
+ color:#fff;
+ font-size:12px;
+ font-weight:800;
+}
+
+/* ==================================================
+   ICON SPIN
+================================================== */
+
+.spin{
+ animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+ from{transform:rotate(0deg);}
+ to{transform:rotate(360deg);}
+}
+
+
+/* AI glow */
+
+.right-panel{
+ background:linear-gradient(180deg,#ffffff,#f0f9ff);
+}
+
+/* Animated cards */
+
+.card,.right-panel{
+ transition:.4s;
+}
+
+.card:hover,.right-panel:hover{
+ transform:translateY(-4px);
+}
+
+/* Highlight pasted text */
+
+mark{
+ background:#fde68a;
+ padding:2px 4px;
+ border-radius:4px;
+}
+
+/* AI loading pulse */
+
+.pulse{
+ animation:pulse .7s ease infinite alternate;
+}
+
+@keyframes pulse{
+ from{transform:scale(1);}
+ to{transform:scale(1.15);}
+}
+
+/* Breakdown live animation */
+
+.breakdown li.active{
+ background:#e0f2fe;
+ box-shadow:0 0 12px #38bdf8;
+}
+
+/* Pie smooth */
+
+canvas{
+ filter:drop-shadow(0 0 8px rgba(0,0,0,.15));
+}
+
+/* Fancy status */
+
+#status{
+ background:linear-gradient(90deg,#e0f2fe,#f0fdf4);
+}
+
+/* Ring glow */
+
+.ring-progress{
+ filter:drop-shadow(0 0 6px #3b82f6);
+}
+
+
+/* ================= AI LOADER ================= */
+
+.ai-loader{
+ display:flex;
+ justify-content:center;
+ gap:16px;
+ margin:18px 0;
+}
+
+.ai-loader span{
+ width:26px;
+ height:26px;
+ border-radius:50%;
+ background:#3b82f6;
+ animation:orbit 1.2s linear infinite;
+ box-shadow:0 0 12px rgba(59,130,246,.6);
+}
+
+.ai-loader span:nth-child(2){
+ animation-delay:.2s;
+ background:#22c55e;
+ box-shadow:0 0 12px rgba(34,197,94,.6);
+}
+
+.ai-loader span:nth-child(3){
+ animation-delay:.4s;
+ background:#f59e0b;
+ box-shadow:0 0 12px rgba(245,158,11,.6);
+}
+
+@keyframes orbit{
+ 0%{transform:translateX(0) scale(.7);}
+ 50%{transform:translateX(35px) scale(1.2);}
+ 100%{transform:translateX(0) scale(.7);}
+}
+
+.hidden{
+ display:none !important;
+}

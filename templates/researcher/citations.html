@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Researcher Citations</title>
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+</head>
+<body>
+
+<nav id="navbar"></nav>
+
+<div class="page-container">
+  <h1 class="page-title">📚 Citations</h1>
+  <p class="page-desc">Tips to reduce similarity by citation + paraphrasing.</p>
+
+  <div class="card-box">
+    <div class="result-card">
+      <h3>✅ When to Cite?</h3>
+      <p>If your text contains identical phrases, definitions, or copied results — add citations.</p>
+    </div>
+
+    <div class="result-card">
+      <h3>✍️ Paraphrase Strategy</h3>
+      <p>Rewrite sentence structure, change voice, simplify phrases, and cite original author.</p>
+    </div>
+
+    <div class="result-card">
+      <h3>🌿 Unique Writing</h3>
+      <p>Write in your own explanation and interpretation. Citation still required for borrowed ideas.</p>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/navbar.js' %}"></script>
+</body>
+</html>

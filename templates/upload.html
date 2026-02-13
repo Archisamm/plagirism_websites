@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Research Paper</title>
+</head>
+<body>
+
+<h2>Upload Research Paper</h2>
+
+<input type="file" id="fileInput" />
+<button id="uploadBtn">Upload</button>
+
+<h3>Response:</h3>
+<pre id="result">Waiting...</pre>
+
+<script>
+document.getElementById("uploadBtn").addEventListener("click", async () => {
+  const fileInput = document.getElementById("fileInput");
+  const result = document.getElementById("result");
+
+  if (!fileInput.files.length) {
+    result.textContent = "❌ Please choose a file first.";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
+
+  result.textContent = "⏳ Uploading...";
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/upload/", {
+      method: "POST",
+      body: formData
+    });
+
+    console.log("HTTP status:", response.status);
+
+    const rawText = await response.text();
+    console.log("Raw response:", rawText);
+
+    const data = JSON.parse(rawText);
+    result.textContent = JSON.stringify(data, null, 2);
+
+  } catch (error) {
+    console.error("Frontend error:", error);
+    result.textContent = "❌ ERROR: " + error.message;
+  }
+});
+</script>
+
+</body>
+</html>
