@@ -5,6 +5,7 @@ from .models import Document, PlagiarismReport
 from .nlp.text_extractor import extract_text
 from .nlp.preprocessor import preprocess_text
 from .nlp.similarity import calculate_plagiarism_score
+from .nlp.global_checker import global_plagiarism_check
 
 
 # -----------------------------------
@@ -90,25 +91,25 @@ def analyze_text(request):
 
     text = request.POST.get("text", "").strip()
 
-    if len(text) < 40:
+    if len(text) < 50:
         return JsonResponse({"error": "Text too short"}, status=400)
 
     try:
-        sentences = preprocess_text(text)
+        score, sources = global_plagiarism_check(text)
 
-        score, matches, breakdown = calculate_plagiarism_score(sentences)
-
-        score = round(float(score), 2)
-        verdict = verdict_from_score(score)
+        if score <= 10:
+            verdict = "Original"
+        elif score <= 24:
+            verdict = "Minor Changes"
+        else:
+            verdict = "Plagiarized"
 
         return JsonResponse({
             "plagiarism_percentage": score,
             "verdict": verdict,
-            "matches": matches,
-            "breakdown": breakdown
+            "sources": sources
         })
 
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return JsonResponse({"error": "Analysis failed"}, status=500)
+        print("GLOBAL ERROR:", e)
+        return JsonResponse({"error": "Global analysis failed"}, status=500)

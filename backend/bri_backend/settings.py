@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-pm_4%)-!*85=x=j3%0p)e26qtzup7nwlg1uca#zoz8^j=bneir
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["*"]
 
 
 # --------------------------------------------------
@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 # --------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -163,11 +164,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # --------------------------------------------------
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR.parent / 'static'
+    BASE_DIR.parent / 'static',
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressdManifestStaticFilesStorage'
 
 # --------------------------------------------------
 # Media files (Uploads)
@@ -220,3 +223,5 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 # ✅ This helps skip signup screen
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
