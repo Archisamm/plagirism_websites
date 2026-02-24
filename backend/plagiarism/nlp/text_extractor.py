@@ -12,7 +12,7 @@ from PIL import Image
 # OPTIONAL: SET TESSERACT PATH (Windows only)
 # Change path if different in your system
 # --------------------------------------------------
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = r"C:\Users\user\Downloads\tesseract-ocr-w64-setup-5.5.0.20241111.exe"
 
 
 # --------------------------------------------------
