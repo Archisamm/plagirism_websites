@@ -5,24 +5,21 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = "Create default admin user automatically"
+    help = "Create default admin automatically"
 
     def handle(self, *args, **kwargs):
 
         email = "shashi@gmail.com"
-        password = "admin123"   # change later if you want
+        password = "admin123"
 
         if not User.objects.filter(email=email).exists():
 
-            self.stdout.write("Creating admin user...")
-
             User.objects.create_superuser(
                 email=email,
-                password=password,
-                username="archith"
+                password=password
             )
 
-            self.stdout.write(self.style.SUCCESS("Admin created!"))
+            self.stdout.write(self.style.SUCCESS("✅ Admin created"))
 
         else:
-            self.stdout.write("Admin already exists.")
+            self.stdout.write("Admin already exists")
