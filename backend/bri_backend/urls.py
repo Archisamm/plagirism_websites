@@ -33,7 +33,7 @@ urlpatterns = [
     # ==============================
     # YOUR CUSTOM ACCOUNT ROUTES
     # ==============================
-    # path("accounts/", include("accounts.urls")),
+    path("accounts/", include("accounts.urls")),
 
     path("after-login/", account_views.after_login, name="after_login"),
     path("setup/profile/", account_views.complete_profile_page, name="complete_profile"),
