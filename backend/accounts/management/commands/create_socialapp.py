@@ -4,16 +4,58 @@ from allauth.socialaccount.models import SocialApp
 
 
 class Command(BaseCommand):
-    help = "Create Google SocialApp automatically (for Render deployment)"
+    help = "Create Google SocialApp automatically for production"
 
     def handle(self, *args, **kwargs):
 
-        # ✅ CHANGE THESE VALUES (same as Google Cloud Console)
-        GOOGLE_CLIENT_ID = "PASTE_YOUR_GOOGLE_CLIENT_ID"
-        GOOGLE_SECRET = "PASTE_YOUR_GOOGLE_CLIENT_SECRET"
+        # =====================================
+        # 🔴 PUT YOUR GOOGLE CLOUD VALUES HERE
+        # =====================================
 
-        site, _ = Site.objects.get_or_create(
+        GOOGLE_CLIENT_ID = "PASTE_YOUR_CLIENT_ID_HERE"
+        GOOGLE_SECRET = "PASTE_YOUR_CLIENT_SECRET_HERE"
+
+        # =====================================
+        # SITE CONFIGURATION
+        # =====================================
+
+        site, created = Site.objects.get_or_create(
             id=1,
             defaults={
                 "domain": "plagirism-websites.onrender.com",
-                "name": "plagirism-websites"})
+                "name": "BRI Plagiarism Platform",
+            },
+        )
+
+        if not created:
+            site.domain = "plagirism-websites.onrender.com"
+            site.name = "BRI Plagiarism Platform"
+            site.save()
+
+        # =====================================
+        # CREATE OR UPDATE SOCIAL APP
+        # =====================================
+
+        app, created = SocialApp.objects.get_or_create(
+            provider="google",
+            name="Google OAuth",
+            defaults={
+                "client_id": GOOGLE_CLIENT_ID,
+                "secret": GOOGLE_SECRET,
+            },
+        )
+
+        # update credentials if already exists
+        app.client_id = GOOGLE_CLIENT_ID
+        app.secret = GOOGLE_SECRET
+        app.save()
+
+        # attach site
+        app.sites.clear()
+        app.sites.add(site)
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                "✅ Google SocialApp created/updated successfully!"
+            )
+        )

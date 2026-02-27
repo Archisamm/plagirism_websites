@@ -12,8 +12,9 @@ from PIL import Image
 # OPTIONAL: SET TESSERACT PATH (Windows only)
 # Change path if different in your system
 # --------------------------------------------------
-pytesseract.pytesseract.tesseract_cmd = r"C:\Users\user\Downloads\tesseract-ocr.exe"
 
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessedata"
+# "C:\Program Files\Tesseract-OCR\tessdata"
 
 # --------------------------------------------------
 # MAIN TEXT EXTRACTION FUNCTION
