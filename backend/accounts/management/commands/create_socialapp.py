@@ -12,8 +12,8 @@ class Command(BaseCommand):
         # 🔴 PUT YOUR GOOGLE CLOUD VALUES HERE
         # =====================================
 
-        GOOGLE_CLIENT_ID = "PASTE_YOUR_CLIENT_ID_HERE"
-        GOOGLE_SECRET = "PASTE_YOUR_CLIENT_SECRET_HERE"
+        GOOGLE_CLIENT_ID = "775317841111-ta7pf7mbhsio3mqq6d4esr66oh16t3o6.apps.googleusercontent.com"
+        GOOGLE_SECRET = "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"
 
         # =====================================
         # SITE CONFIGURATION
