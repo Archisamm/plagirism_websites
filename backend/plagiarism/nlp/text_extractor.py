@@ -231,8 +231,6 @@
 
 #     return text[:8000]
 
-
-
 import pdfplumber
 import docx
 import os
@@ -244,27 +242,29 @@ import os
 def extract_text(file_path):
 
     if not os.path.exists(file_path):
-        print("❌ File not found")
+        print("❌ File not found:", file_path)
         return ""
 
-    file_path = file_path.lower()
+    file_path_lower = file_path.lower()
 
-    if file_path.endswith(".pdf"):
-        return extract_pdf_text(file_path)
+    if file_path_lower.endswith(".pdf"):
+        return extract_pdf_fast(file_path)
 
-    elif file_path.endswith(".docx"):
-        return extract_docx_text(file_path)
+    elif file_path_lower.endswith(".docx"):
+        doc = docx.Document(file_path)
+        return "\n".join(p.text for p in doc.paragraphs)
 
-    elif file_path.endswith(".txt"):
-        return extract_txt_text(file_path)
+    elif file_path_lower.endswith(".txt"):
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            return f.read()
 
     return ""
 
 
 # ======================================
-# FAST PDF EXTRACTION (NO OCR)
+# FAST PDF EXTRACTION (RENDER SAFE)
 # ======================================
-def extract_pdf_text(file_path):
+def extract_pdf_fast(file_path):
 
     text = ""
 
@@ -273,59 +273,126 @@ def extract_pdf_text(file_path):
 
             total_pages = len(pdf.pages)
 
-            # ⭐ SPEED OPTIMIZATION
-            # only sample pages
-            sample_pages = {
+            print("📄 PDF Pages:", total_pages)
+
+            # sample pages only (FAST)
+            sample_indexes = set([
                 0,
                 total_pages // 2,
                 total_pages - 1
-            }
+            ])
 
-            for i in sample_pages:
-                if i < 0 or i >= total_pages:
-                    continue
+            for i in sample_indexes:
+                if 0 <= i < total_pages:
+                    page_text = pdf.pages[i].extract_text()
 
-                page = pdf.pages[i]
-                page_text = page.extract_text()
-
-                if page_text:
-                    text += page_text + "\n"
+                    if page_text:
+                        text += page_text + "\n"
 
     except Exception as e:
-        print("PDF READ ERROR:", e)
+        print("❌ PDF extraction error:", e)
         return ""
 
-    if len(text.strip()) < 50:
-        print("⚠ Image-based PDF detected (OCR disabled on server)")
-        return ""
+    print("✅ Extracted characters:", len(text))
 
-    print("✅ Text PDF extracted")
     return text[:8000]
 
 
-# ======================================
-# DOCX
-# ======================================
-def extract_docx_text(file_path):
-
-    try:
-        doc = docx.Document(file_path)
-        return "\n".join(p.text for p in doc.paragraphs)
-
-    except Exception as e:
-        print("DOCX ERROR:", e)
-        return ""
 
 
-# ======================================
-# TXT
-# ======================================
-def extract_txt_text(file_path):
+# import pdfplumber
+# import docx
+# import os
 
-    try:
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            return f.read()
 
-    except Exception as e:
-        print("TXT ERROR:", e)
-        return ""
+# # ======================================
+# # MAIN ENTRY
+# # ======================================
+# def extract_text(file_path):
+
+#     if not os.path.exists(file_path):
+#         print("❌ File not found")
+#         return ""
+
+#     file_path = file_path.lower()
+
+#     if file_path.endswith(".pdf"):
+#         return extract_pdf_text(file_path)
+
+#     elif file_path.endswith(".docx"):
+#         return extract_docx_text(file_path)
+
+#     elif file_path.endswith(".txt"):
+#         return extract_txt_text(file_path)
+
+#     return ""
+
+
+# # ======================================
+# # FAST PDF EXTRACTION (NO OCR)
+# # ======================================
+# def extract_pdf_text(file_path):
+
+#     text = ""
+
+#     try:
+#         with pdfplumber.open(file_path) as pdf:
+
+#             total_pages = len(pdf.pages)
+
+#             # ⭐ SPEED OPTIMIZATION
+#             # only sample pages
+#             sample_pages = {
+#                 0,
+#                 total_pages // 2,
+#                 total_pages - 1
+#             }
+
+#             for i in sample_pages:
+#                 if i < 0 or i >= total_pages:
+#                     continue
+
+#                 page = pdf.pages[i]
+#                 page_text = page.extract_text()
+
+#                 if page_text:
+#                     text += page_text + "\n"
+
+#     except Exception as e:
+#         print("PDF READ ERROR:", e)
+#         return ""
+
+#     if len(text.strip()) < 50:
+#         print("⚠ Image-based PDF detected (OCR disabled on server)")
+#         return ""
+
+#     print("✅ Text PDF extracted")
+#     return text[:8000]
+
+
+# # ======================================
+# # DOCX
+# # ======================================
+# def extract_docx_text(file_path):
+
+#     try:
+#         doc = docx.Document(file_path)
+#         return "\n".join(p.text for p in doc.paragraphs)
+
+#     except Exception as e:
+#         print("DOCX ERROR:", e)
+#         return ""
+
+
+# # ======================================
+# # TXT
+# # ======================================
+# def extract_txt_text(file_path):
+
+#     try:
+#         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+#             return f.read()
+
+#     except Exception as e:
+#         print("TXT ERROR:", e)
+#         return ""

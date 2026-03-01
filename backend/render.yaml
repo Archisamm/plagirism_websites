@@ -1,8 +1,0 @@
-services:
-- type : web
-  name : bri-plagarism
-  env : python
-  buildCommond: "./build.sh"
-  startCommand: "guicorn bri_backend.wsgi:application"
-  plan : free
-  

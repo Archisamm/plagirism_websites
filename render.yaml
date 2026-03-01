@@ -1,0 +1,20 @@
+# services:
+# - type : web
+#   name : bri-plagarism
+#   env : python
+#   buildCommond: "./build.sh"
+         
+                
+#   startCommand: "guicorn bri_backend.wsgi:application"
+#   plan : free
+  
+
+  services:
+  - type: web
+    name: bri-plagiarism
+    runtime: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python backend/manage.py collectstatic --noinput
+    startCommand: |
+      gunicorn bri_backend.wsgi:application --chdir backend
