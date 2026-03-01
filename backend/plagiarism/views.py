@@ -119,19 +119,19 @@
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import time
+import traceback
 
 from .models import Document, PlagiarismReport
 from .nlp.text_extractor import extract_text
 from .nlp.preprocessor import preprocess_text
 from .nlp.similarity import calculate_plagiarism_score
-
-# ✅ NEW IMPORT
 from .nlp.source_finder import search_sources
 
 
-# -----------------------------------
-# Score → Verdict
-# -----------------------------------
+# ======================================================
+# SCORE → VERDICT
+# ======================================================
 def verdict_from_score(score):
     if score <= 10:
         return "Original"
@@ -141,11 +141,14 @@ def verdict_from_score(score):
         return "Plagiarized"
 
 
-# -----------------------------------
-# Upload File
-# -----------------------------------
+# ======================================================
+# FILE UPLOAD ANALYSIS
+# ======================================================
 @csrf_exempt
 def upload_document(request):
+
+    print("✅ upload_document called")
+    print("REQUEST METHOD:", request.method)
 
     if request.method != "POST":
         return JsonResponse({"error": "POST only"}, status=405)
@@ -156,35 +159,62 @@ def upload_document(request):
         return JsonResponse({"error": "No file uploaded"}, status=400)
 
     try:
-        # Save document
+        # -----------------------------
+        # SAVE FILE
+        # -----------------------------
         document = Document.objects.create(
             title=uploaded_file.name,
             file=uploaded_file
         )
 
-        # Extract text
+        print("📁 File saved at:", document.file.path)
+
+        # ⭐ IMPORTANT FOR RENDER FILESYSTEM
+        time.sleep(0.5)
+
+        # -----------------------------
+        # TEXT EXTRACTION
+        # -----------------------------
         extracted_text = extract_text(document.file.path)
 
-        if not extracted_text.strip():
-            return JsonResponse({"error": "Could not extract text"}, status=400)
+        print("🧠 Extracted text length:", len(extracted_text))
 
-        # Preprocess
+        if not extracted_text or not extracted_text.strip():
+            return JsonResponse(
+                {"error": "Could not extract text"},
+                status=400
+            )
+
+        # -----------------------------
+        # PREPROCESS
+        # -----------------------------
         sentences = preprocess_text(extracted_text)
 
         if not sentences:
-            return JsonResponse({"error": "Text too short"}, status=400)
+            return JsonResponse(
+                {"error": "Text too short"},
+                status=400
+            )
 
-        # LOCAL plagiarism check
+        # -----------------------------
+        # LOCAL SIMILARITY
+        # -----------------------------
         score, matches, breakdown = calculate_plagiarism_score(sentences)
 
         score = round(float(score), 2)
         verdict = verdict_from_score(score)
 
-        # ✅ GLOBAL SOURCE SEARCH (NEW)
+        # -----------------------------
+        # GLOBAL SOURCE SEARCH
+        # -----------------------------
         print("🌍 Searching global sources...")
         sources = search_sources(extracted_text)
 
-        # Save report
+        print("🔎 Sources found:", len(sources))
+
+        # -----------------------------
+        # SAVE REPORT
+        # -----------------------------
         PlagiarismReport.objects.create(
             document=document,
             plagiarism_percentage=score,
@@ -193,25 +223,34 @@ def upload_document(request):
             breakdown_json=breakdown
         )
 
+        # -----------------------------
+        # RESPONSE
+        # -----------------------------
         return JsonResponse({
             "plagiarism_percentage": score,
             "verdict": verdict,
             "matches": matches,
             "breakdown": breakdown,
-            "sources": sources   # ⭐ IMPORTANT
+            "sources": sources
         })
 
     except Exception as e:
-        import traceback
+        print("❌ ANALYSIS ERROR")
         traceback.print_exc()
-        return JsonResponse({"error": "Analysis failed"}, status=500)
+
+        return JsonResponse(
+            {"error": "Analysis failed"},
+            status=500
+        )
 
 
-# -----------------------------------
-# Analyze Pasted Text
-# -----------------------------------
+# ======================================================
+# TEXT ANALYSIS (PASTE TEXT)
+# ======================================================
 @csrf_exempt
 def analyze_text(request):
+
+    print("✅ analyze_text called")
 
     if request.method != "POST":
         return JsonResponse({"error": "POST only"}, status=405)
@@ -222,11 +261,11 @@ def analyze_text(request):
         return JsonResponse({"error": "Text too short"}, status=400)
 
     try:
-        print("🌍 Global plagiarism check running...")
+        print("🌍 Running global search...")
 
         sources = search_sources(text)
 
-        # simple scoring from sources
+        # simple scoring logic
         score = min(len(sources) * 15, 100)
         verdict = verdict_from_score(score)
 
@@ -237,5 +276,10 @@ def analyze_text(request):
         })
 
     except Exception as e:
-        print("GLOBAL ERROR:", e)
-        return JsonResponse({"error": "Global analysis failed"}, status=500)
+        print("❌ GLOBAL ERROR:", e)
+        traceback.print_exc()
+
+        return JsonResponse(
+            {"error": "Global analysis failed"},
+            status=500
+        )
