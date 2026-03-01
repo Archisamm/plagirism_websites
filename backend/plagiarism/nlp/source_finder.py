@@ -114,14 +114,17 @@ def clean_text(text):
 def get_search_chunks(text, max_chunks=5):
     sentences = re.split(r"[.!?]", text)
 
-    cleaned = []
+    valid = []
     for s in sentences:
         s = s.strip()
-        if len(s) > 80:   # ignore small sentences
-            cleaned.append(s)
 
-    return cleaned[:max_chunks]
+        # Google works best with 15–25 words
+        words = s.split()
 
+        if 12 <= len(words) <= 25:
+            valid.append(" ".join(words))
+
+    return valid[:max_chunks]
 
 # =====================================
 # GOOGLE SEARCH
@@ -189,6 +192,7 @@ def extract_author(page_text):
 # MAIN SOURCE FINDER
 # =====================================
 def search_sources(text):
+    # print("Searching Google for", query)
 
     chunks = get_search_chunks(text)
 

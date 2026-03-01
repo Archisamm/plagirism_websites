@@ -160,11 +160,36 @@ function renderMatches(sources){
 
 // ================= SERVER =================
 
-async function send(url,fd){
- const r=await fetch(url,{method:"POST",body:fd});
- const d=await r.json();
- if(d.error) throw new Error(d.error);
- return d;
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+async function send(url, fd) {
+    const csrftoken = getCookie('csrftoken');
+
+    const r = await fetch(url, {
+        method: "POST",
+        body: fd,
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
+        credentials: "same-origin"
+    });
+
+    const d = await r.json();
+    if (d.error) throw new Error(d.error);
+    return d;
 }
 
 
