@@ -135,6 +135,8 @@ import pdfplumber
 import docx
 import os
 
+RENDER_ENV = os.environ.get("RENDER") is not None
+
 # OPTIONAL OCR
 try:
     import pytesseract
