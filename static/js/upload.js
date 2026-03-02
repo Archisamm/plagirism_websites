@@ -256,6 +256,7 @@ analyze?.addEventListener("click", async ()=>{
   pieDraw(breakdown);
 
   renderMatches(d.sources);
+  renderHighlights(d.highlights);
 
   breakdownEls.forEach(b=>b.classList.add("done"));
   status.textContent="✅ Completed";
@@ -268,3 +269,27 @@ analyze?.addEventListener("click", async ()=>{
 });
 
 });
+
+
+
+function renderHighlights(items){
+
+ const box=document.getElementById("highlightBox");
+ if(!box) return;
+
+ box.innerHTML="<h3>Detected Plagiarism Segments</h3>";
+
+ (items||[]).forEach(h=>{
+   box.innerHTML+=`
+     <div class="highlight-card">
+        <p>${h.sentence}</p>
+        <small>
+        🔴 ${h.similarity}% similar —
+        <a href="${h.source?.url}" target="_blank">
+        ${h.source?.title || "Source"}
+        </a>
+        </small>
+     </div>
+   `;
+ });
+}

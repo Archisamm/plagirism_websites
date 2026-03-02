@@ -127,6 +127,7 @@ from .nlp.text_extractor import extract_text
 from .nlp.preprocessor import preprocess_text
 from .nlp.similarity import calculate_plagiarism_score
 from .nlp.source_finder import search_sources
+from .nlp.highlighter import highlight_matches
 
 
 # ======================================================
@@ -209,6 +210,7 @@ def upload_document(request):
         # -----------------------------
         print("🌍 Searching global sources...")
         sources = search_sources(extracted_text)
+        highlights = highlight_matches(extracted_text,sources) 
 
         print("🔎 Sources found:", len(sources))
 
@@ -231,7 +233,8 @@ def upload_document(request):
             "verdict": verdict,
             "matches": matches,
             "breakdown": breakdown,
-            "sources": sources
+            "sources": sources,
+            "highlights": highlights
         })
 
     except Exception as e:
