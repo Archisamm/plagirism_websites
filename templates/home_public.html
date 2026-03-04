@@ -2,654 +2,1112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>BRI AI Plagiarism Detection</title>
+  <title>BRI AI - Advanced Plagiarism Detection Platform</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Calistoga&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
   <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
   <link rel="stylesheet" href="{% static 'css/home-ai.css' %}">
+  
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Particles Background -->
-  <div class="particles"></div>
+  <!-- Animated Background -->
+  <div class="gradient-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    <div class="gradient-orb orb-4"></div>
+  </div>
+  
+  <div class="noise-overlay"></div>
+  
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
 
   <!-- ================= NAVBAR ================= -->
-  <nav class="navbar">
-    <div class="brand">
-      <span class="brand-icon">🤖</span>
-      BRI AI
-    </div>
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <span class="brand-icon">✨</span>
+        <span class="brand-text">BRI<span class="brand-highlight">AI</span></span>
+      </div>
 
-    <ul class="nav-links">
-      <li><a href="#hero" class="nav-link">Home</a></li>
-      <li><a href="#about" class="nav-link">About</a></li>
-      <li><a href="#features" class="nav-link">Features</a></li>
-      <li><a href="#pricing" class="nav-link">Pricing</a></li>
-      <li><a class="btn-primary" href="/login/">Get Started →</a></li>
-    </ul>
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-link active" data-page="home">Home</a></li>
+        <li><a href="#platform" class="nav-link" data-page="platform">Platform</a></li>
+        <li><a href="#features" class="nav-link" data-page="features">Features</a></li>
+        <li><a href="#about" class="nav-link" data-page="about">About</a></li>
+        <li><a href="#pricing" class="nav-link" data-page="pricing">Pricing</a></li>
+        <li><a href="#resources" class="nav-link" data-page="resources">Resources</a></li>
+        <li><a href="#contact" class="nav-link" data-page="contact">Contact</a></li>
+        <li><a href="/login/" class="nav-btn">Dashboard →</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <a href="/login/" class="nav-btn-mobile">Sign In</a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      </div>
+    </div>
   </nav>
 
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobileOverlay"></div>
+
+  <!-- ================= MAIN LAYOUT ================= -->
   <div class="layout">
     <!-- ================= SIDEBAR ================= -->
     <aside class="sidebar">
-      <a href="#hero" class="side-item">🏠 Overview</a>
-      <a href="#what" class="side-item">📘 What is Plagiarism?</a>
-      <a href="#how" class="side-item">🧠 How AI Works</a>
-      <a href="#features" class="side-item">✨ Features</a>
-      <a href="#students" class="side-item">🎓 Students</a>
-      <a href="#professionals" class="side-item">💼 Professionals</a>
-      <a href="#researchers" class="side-item">🔬 Researchers</a>
-      <a href="#video" class="side-item">🎥 Demo</a>
-      <a href="#faq" class="side-item">❓ FAQ</a>
+      <div class="sidebar-header">
+        <div class="sidebar-logo">📚</div>
+        <h3>Explore</h3>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#overview" class="sidebar-link active" data-sidebar="overview">
+          <span class="sidebar-icon">🏠</span>
+          <span>Overview</span>
+        </a>
+        <a href="#plagiarism" class="sidebar-link" data-sidebar="plagiarism">
+          <span class="sidebar-icon">📘</span>
+          <span>What is Plagiarism?</span>
+        </a>
+        <a href="#technology" class="sidebar-link" data-sidebar="technology">
+          <span class="sidebar-icon">🧠</span>
+          <span>AI Technology</span>
+        </a>
+        <a href="#usecases" class="sidebar-link" data-sidebar="usecases">
+          <span class="sidebar-icon">🎯</span>
+          <span>Use Cases</span>
+        </a>
+        <a href="#demo" class="sidebar-link" data-sidebar="demo">
+          <span class="sidebar-icon">🎥</span>
+          <span>Live Demo</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-cta">
+        <div class="cta-content">
+          <span class="cta-icon">⚡</span>
+          <h4>API Access</h4>
+          <p>Integrate with your workflow</p>
+          <a href="/developers/" class="cta-link">Learn more →</a>
+        </div>
+      </div>
     </aside>
 
-    <!-- ================= MAIN ================= -->
-    <main class="main">
-      <!-- HERO -->
-      <section id="hero" class="hero">
-        <div class="hero-content">
-          <span class="hero-badge">🚀 AI-Powered</span>
-          <h1>Advanced Plagiarism Detection with AI</h1>
-          <p class="hero-description">
-            Upload documents or paste text to check originality instantly. 
-            Our AI analyzes your content with 99.9% accuracy.
-          </p>
-          <div class="hero-stats">
-            <div class="stat">
-              <span class="stat-number">10M+</span>
-              <span class="stat-label">Documents Checked</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">99.9%</span>
-              <span class="stat-label">Accuracy</span>
-            </div>
-            <div class="stat">
-              <span class="stat-number">50+</span>
-              <span class="stat-label">Languages</span>
-            </div>
-          </div>
-          <a href="/login/" class="hero-btn">
-            Start Checking Now
-            <span class="btn-arrow">→</span>
-          </a>
-        </div>
-        <div class="hero-image">
-          <div class="floating-card card-1">
-            <span class="card-icon">📊</span>
-            <span>98% Original</span>
-          </div>
-          <div class="floating-card card-2">
-            <span class="card-icon">🔍</span>
-            <span>AI Analysis</span>
-          </div>
-          <div class="floating-card card-3">
-            <span class="card-icon">✅</span>
-            <span>Clean Report</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- WHAT IS PLAGIARISM -->
-      <section id="what" class="split">
-        <div class="text" data-aos="fade-right">
-          <h2>What is Plagiarism?</h2>
-          <p class="section-description">
-            Plagiarism is the act of using someone else's work without proper attribution. 
-            It includes:
-          </p>
-          <ul class="feature-list">
-            <li>📝 Copy-pasting text without quotes</li>
-            <li>🔄 Paraphrasing without citation</li>
-            <li>🎨 Using images without permission</li>
-            <li>💡 Stealing ideas or concepts</li>
-          </ul>
-          <div class="stats-mini">
-            <div class="stat-mini">
-              <span class="stat-mini-number">80%</span>
-              <span>of students admit to plagiarism</span>
-            </div>
-          </div>
-        </div>
-        <div class="image" data-aos="fade-left">
-          <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600" alt="Plagiarism concept">
-          <div class="image-overlay"></div>
-        </div>
-      </section>
-
-      <!-- HOW AI WORKS -->
-      <section id="how" class="center-section">
-        <h2>How Our AI Detects Plagiarism</h2>
-        <p class="section-description">Advanced neural networks analyze your text in 6 steps</p>
-        
-        <div class="steps-container">
-          <div class="step-card" data-aos="fade-up" data-aos-delay="100">
-            <div class="step-number">1</div>
-            <div class="step-icon">📖</div>
-            <h3>Reads Text</h3>
-            <p>Extracts and normalizes content</p>
-          </div>
-          <div class="step-card" data-aos="fade-up" data-aos-delay="200">
-            <div class="step-number">2</div>
-            <div class="step-icon">🧹</div>
-            <h3>Cleans Data</h3>
-            <p>Removes stop words and noise</p>
-          </div>
-          <div class="step-card" data-aos="fade-up" data-aos-delay="300">
-            <div class="step-number">3</div>
-            <div class="step-icon">🔪</div>
-            <h3>Tokenizes</h3>
-            <p>Breaks into sentences & n-grams</p>
-          </div>
-          <div class="step-card" data-aos="fade-up" data-aos-delay="400">
-            <div class="step-number">4</div>
-            <div class="step-icon">🔎</div>
-            <h3>Compares</h3>
-            <p>Matches against database</p>
-          </div>
-          <div class="step-card" data-aos="fade-up" data-aos-delay="500">
-            <div class="step-number">5</div>
-            <div class="step-icon">📊</div>
-            <h3>Calculates</h3>
-            <p>Generates similarity score</p>
-          </div>
-          <div class="step-card" data-aos="fade-up" data-aos-delay="600">
-            <div class="step-number">6</div>
-            <div class="step-icon">📈</div>
-            <h3>Visualizes</h3>
-            <p>Creates interactive report</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- FEATURES -->
-      <section id="features" class="feature-section">
-        <h2>Powerful Features</h2>
-        <p class="section-description">Everything you need to ensure content originality</p>
-
-        <div class="feature-grid">
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
-            <div class="feature-icon">📁</div>
-            <h3>Multi Format Support</h3>
-            <p>Upload PDF, DOCX, TXT or paste text directly</p>
-            <div class="feature-badge">Popular</div>
-          </div>
-
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
-            <div class="feature-icon">📊</div>
-            <h3>Visual Reports</h3>
-            <p>Interactive charts and detailed breakdowns</p>
-            <div class="feature-badge">New</div>
-          </div>
-
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
-            <div class="feature-icon">🧠</div>
-            <h3>Smart AI Matching</h3>
-            <p>Detects paraphrased and translated content</p>
-            <div class="feature-badge">AI</div>
-          </div>
-
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="400">
-            <div class="feature-icon">⚡</div>
-            <h3>Real-time Analysis</h3>
-            <p>Get results in seconds, not minutes</p>
-          </div>
-
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="500">
-            <div class="feature-icon">🔒</div>
-            <h3>Secure & Private</h3>
-            <p>Your documents are encrypted and never shared</p>
-          </div>
-
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="600">
-            <div class="feature-icon">🌐</div>
-            <h3>Multi-language</h3>
-            <p>Supports 50+ languages</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- STUDENTS -->
-      <section id="students" class="split">
-        <div class="text" data-aos="fade-right">
-          <h2>For Students</h2>
-          <p class="section-description">
-            Ensure your assignments are original before submission. Our tool helps you:
-          </p>
-          <ul class="feature-list">
-            <li>✅ Check for accidental plagiarism</li>
-            <li>📚 Learn proper citation practices</li>
-            <li>📈 Improve your writing skills</li>
-            <li>🎯 Get higher grades</li>
-          </ul>
-          <a href="/student/dashboard/" class="cta-link">Try Student Dashboard →</a>
-        </div>
-        <div class="image" data-aos="fade-left">
-          <img src="https://images.unsplash.com/photo-1584697964358-3e14ca57658b?w=600" alt="Student">
-        </div>
-      </section>
-
-      <!-- PROFESSIONALS -->
-      <section id="professionals" class="split reverse">
-        <div class="text" data-aos="fade-left">
-          <h2>For Professionals</h2>
-          <p class="section-description">
-            Protect your brand with original content:
-          </p>
-          <ul class="feature-list">
-            <li>✅ Check blog posts and articles</li>
-            <li>📊 Marketing content validation</li>
-            <li>©️ Copyright protection</li>
-            <li>📈 SEO-friendly content</li>
-          </ul>
-          <a href="/professional/dashboard/" class="cta-link">Try Professional Dashboard →</a>
-        </div>
-        <div class="image" data-aos="fade-right">
-          <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600" alt="Professional">
-        </div>
-      </section>
-
-      <!-- RESEARCHERS -->
-      <section id="researchers" class="split">
-        <div class="text" data-aos="fade-right">
-          <h2>For Researchers</h2>
-          <p class="section-description">
-            Maintain academic integrity with advanced tools:
-          </p>
-          <ul class="feature-list">
-            <li>✅ Validate research papers</li>
-            <li>📚 Citation analysis</li>
-            <li>🔬 Peer review assistance</li>
-            <li>📊 Publication readiness</li>
-          </ul>
-          <a href="/researcher/dashboard/" class="cta-link">Try Researcher Dashboard →</a>
-        </div>
-        <div class="image" data-aos="fade-left">
-          <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600" alt="Researcher">
-        </div>
-      </section>
-
-      <!-- VIDEO -->
-      <section id="video" class="center-section">
-        <h2>See How It Works</h2>
-        <p class="section-description">Watch our 2-minute demo</p>
-        <div class="video-container">
-          <iframe width="100%" height="500" 
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-            frameborder="0"
-            allowfullscreen>
-          </iframe>
-        </div>
-      </section>
-
-      <!-- FAQ -->
-      <section id="faq" class="faq">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-grid">
-          <div class="faq-item" data-aos="fade-up">
-            <h4>Is my data saved?</h4>
-            <p>No, your documents are automatically deleted after analysis. We prioritize your privacy.</p>
-          </div>
-          <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
-            <h4>Is this free?</h4>
-            <p>Basic checks are free. Premium features require a subscription.</p>
-          </div>
-          <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
-            <h4>Does it check the internet?</h4>
-            <p>Yes, we check against billions of web pages and academic databases.</p>
-          </div>
-          <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
-            <h4>How accurate is it?</h4>
-            <p>Our AI achieves 99.9% accuracy with advanced deep learning models.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- CTA Section -->
-      <section class="cta-section">
-        <div class="cta-content">
-          <h2>Ready to check your content?</h2>
-          <p>Join millions of users who trust BRI AI for plagiarism detection</p>
-          <a href="/signup/" class="cta-button">
-            Get Started Free
-            <span class="btn-arrow">→</span>
-          </a>
-        </div>
-      </section>
-
-      <footer class="footer">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <span class="brand-icon">🤖</span>
-            BRI AI
-          </div>
-          <div class="footer-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Contact</a>
-            <a href="#">Blog</a>
-          </div>
-          <p>© 2026 BRI AI Plagiarism Detection. All rights reserved.</p>
-        </div>
-      </footer>
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="main-content" id="mainContent">
+      <!-- Content will be dynamically loaded here -->
     </main>
   </div>
 
-  <!-- AOS Library for scroll animations -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Hidden Templates for Dynamic Loading -->
+  <div style="display: none;">
+    <!-- HOME PAGE -->
+    <div id="home-template">
+      <!-- HERO SECTION -->
+      <section class="hero-section">
+        <div class="hero-grid">
+          <div class="hero-text" data-aos="fade-right">
+            <div class="hero-badge">
+              <span class="badge-pulse"></span>
+              AI-Powered Detection
+            </div>
+            <h1 class="hero-title">
+              <span class="title-line">Intelligent Plagiarism</span>
+              <span class="title-gradient">Detection for the</span>
+              <span class="title-highlight">Modern Era</span>
+            </h1>
+            <p class="hero-description">
+              Harness the power of advanced AI to protect your content, ensure academic integrity, 
+              and maintain originality across all your documents.
+            </p>
+            
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number">10M+</span>
+                <span class="stat-label">Documents Scanned</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">99.9%</span>
+                <span class="stat-label">Accuracy Rate</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Languages</span>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <a href="/signup/" class="btn-primary">
+                Start Free Trial
+                <span class="btn-icon">→</span>
+              </a>
+              <a href="#demo" class="btn-outline sidebar-trigger" data-sidebar="demo">
+                <span class="btn-icon">▶</span>
+                Watch Demo
+              </a>
+            </div>
+
+            <div class="hero-trust">
+              <div class="trust-item">
+                <span>⭐ 4.9/5</span>
+                <span>from 2k+ reviews</span>
+              </div>
+              <div class="trust-item">
+                <span>🔒 GDPR Compliant</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual" data-aos="fade-left">
+            <div class="visual-container">
+              <div class="floating-card card-1">
+                <span class="card-icon">📊</span>
+                <div class="card-content">
+                  <span class="card-label">Originality Score</span>
+                  <span class="card-value">98%</span>
+                </div>
+              </div>
+              <div class="floating-card card-2">
+                <span class="card-icon">🔍</span>
+                <div class="card-content">
+                  <span class="card-label">Matches Found</span>
+                  <span class="card-value">3</span>
+                </div>
+              </div>
+              <div class="floating-card card-3">
+                <span class="card-icon">✅</span>
+                <div class="card-content">
+                  <span class="card-label">Clean Report</span>
+                  <span class="card-value">Ready</span>
+                </div>
+              </div>
+              <div class="visual-graph">
+                <svg viewBox="0 0 400 300" class="graph-svg">
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#6366f1" />
+                      <stop offset="50%" stop-color="#8b5cf6" />
+                      <stop offset="100%" stop-color="#ec4899" />
+                    </linearGradient>
+                  </defs>
+                  <path class="graph-line" d="M0 200 Q 100 100, 200 150 T 400 100" />
+                  <circle class="graph-dot" cx="0" cy="200" r="4" />
+                  <circle class="graph-dot" cx="100" cy="100" r="4" />
+                  <circle class="graph-dot" cx="200" cy="150" r="4" />
+                  <circle class="graph-dot" cx="300" cy="120" r="4" />
+                  <circle class="graph-dot" cx="400" cy="100" r="4" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLATFORM OVERVIEW (Summary) -->
+      <section class="platform-section">
+        <div class="section-header" data-aos="fade-up">
+          <span class="section-subtitle">Why Choose BRI AI</span>
+          <h2 class="section-title">Next-Generation <span class="gradient-text">Plagiarism Detection</span></h2>
+          <p class="section-description">
+            Our platform combines cutting-edge AI technology with intuitive design to deliver 
+            unparalleled accuracy and user experience.
+          </p>
+        </div>
+
+        <div class="platform-grid">
+          <div class="platform-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="card-icon-wrapper">
+              <span class="platform-icon">🧠</span>
+            </div>
+            <h3>Advanced Neural Networks</h3>
+            <p>Deep learning models trained on millions of documents for superior accuracy</p>
+            <a href="#platform" class="card-link nav-trigger" data-page="platform">Learn more →</a>
+          </div>
+
+          <div class="platform-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="card-icon-wrapper">
+              <span class="platform-icon">⚡</span>
+            </div>
+            <h3>Real-time Analysis</h3>
+            <p>Get results in seconds with our optimized processing engine</p>
+            <a href="#platform" class="card-link nav-trigger" data-page="platform">Learn more →</a>
+          </div>
+
+          <div class="platform-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="card-icon-wrapper">
+              <span class="platform-icon">🔒</span>
+            </div>
+            <h3>Enterprise Security</h3>
+            <p>Bank-level encryption and privacy protection for your documents</p>
+            <a href="#platform" class="card-link nav-trigger" data-page="platform">Learn more →</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- PLATFORM PAGE -->
+    <div id="platform-template">
+      <section class="page-header">
+        <h1 class="page-title">Our <span class="gradient-text">Platform</span></h1>
+        <p class="page-description">Discover the technology powering next-generation plagiarism detection</p>
+      </section>
+
+      <section class="platform-deep-section">
+        <div class="platform-architecture">
+          <h2>Platform Architecture</h2>
+          <div class="arch-diagram">
+            <div class="arch-layer" data-aos="fade-up">
+              <span class="layer-icon">🌐</span>
+              <h3>Web Interface</h3>
+              <p>React-based SPA with real-time updates</p>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-layer" data-aos="fade-up" data-aos-delay="100">
+              <span class="layer-icon">⚙️</span>
+              <h3>API Gateway</h3>
+              <p>RESTful API with rate limiting</p>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-layer" data-aos="fade-up" data-aos-delay="200">
+              <span class="layer-icon">🧠</span>
+              <h3>AI Engine</h3>
+              <p>TensorFlow models for similarity detection</p>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-layer" data-aos="fade-up" data-aos-delay="300">
+              <span class="layer-icon">🗄️</span>
+              <h3>Database Layer</h3>
+              <p>Distributed indexing of billions of sources</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-specs">
+          <h2>Technical Specifications</h2>
+          <div class="specs-grid">
+            <div class="spec-card">
+              <span class="spec-value">500ms</span>
+              <span class="spec-label">Average Response Time</span>
+            </div>
+            <div class="spec-card">
+              <span class="spec-value">10B+</span>
+              <span class="spec-label">Indexed Documents</span>
+            </div>
+            <div class="spec-card">
+              <span class="spec-value">99.99%</span>
+              <span class="spec-label">Uptime SLA</span>
+            </div>
+            <div class="spec-card">
+              <span class="spec-value">256-bit</span>
+              <span class="spec-label">Encryption</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- FEATURES PAGE -->
+    <div id="features-template">
+      <section class="page-header">
+        <h1 class="page-title">Powerful <span class="gradient-text">Features</span></h1>
+        <p class="page-description">Everything you need to ensure content originality</p>
+      </section>
+
+      <section class="features-deep-section">
+        <div class="features-category">
+          <h2>Core Features</h2>
+          <div class="features-detailed-grid">
+            <div class="feature-detailed-card">
+              <span class="feature-detailed-icon">📝</span>
+              <h3>Text Analysis</h3>
+              <ul>
+                <li>Sentence-by-sentence comparison</li>
+                <li>Paraphrase detection</li>
+                <li>Citation checking</li>
+                <li>Grammar analysis</li>
+              </ul>
+            </div>
+            <div class="feature-detailed-card">
+              <span class="feature-detailed-icon">📁</span>
+              <h3>Document Processing</h3>
+              <ul>
+                <li>PDF text extraction</li>
+                <li>DOCX parsing</li>
+                <li>OCR for scanned docs</li>
+                <li>Batch processing</li>
+              </ul>
+            </div>
+            <div class="feature-detailed-card">
+              <span class="feature-detailed-icon">📊</span>
+              <h3>Reporting</h3>
+              <ul>
+                <li>Interactive dashboards</li>
+                <li>PDF report generation</li>
+                <li>Source highlighting</li>
+                <li>Export options</li>
+              </ul>
+            </div>
+            <div class="feature-detailed-card">
+              <span class="feature-detailed-icon">🔌</span>
+              <h3>Integrations</h3>
+              <ul>
+                <li>REST API</li>
+                <li>LMS integration</li>
+                <li>Browser extensions</li>
+                <li>Zapier support</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ABOUT PAGE -->
+    <div id="about-template">
+      <section class="page-header">
+        <h1 class="page-title">About <span class="gradient-text">BRI AI</span></h1>
+        <p class="page-description">Our mission to protect originality worldwide</p>
+      </section>
+
+      <section class="about-section">
+        <div class="about-grid">
+          <div class="about-content">
+            <h2>Our Story</h2>
+            <p>Founded in 2023, BRI AI emerged from a simple observation: as content creation explodes, so does the need for authenticity. Our team of AI researchers and education specialists came together to build a platform that makes plagiarism detection accessible, accurate, and intuitive.</p>
+            <p>Today, we serve millions of users across 150+ countries, protecting academic integrity and content originality.</p>
+            
+            <div class="mission-statement">
+              <span class="quote-mark">"</span>
+              <p>Democratizing access to advanced plagiarism detection technology</p>
+            </div>
+          </div>
+          <div class="about-stats">
+            <div class="about-stat-card">
+              <span class="about-stat-number">150+</span>
+              <span class="about-stat-label">Countries</span>
+            </div>
+            <div class="about-stat-card">
+              <span class="about-stat-number">2M+</span>
+              <span class="about-stat-label">Active Users</span>
+            </div>
+            <div class="about-stat-card">
+              <span class="about-stat-number">50+</span>
+              <span class="about-stat-label">Team Members</span>
+            </div>
+            <div class="about-stat-card">
+              <span class="about-stat-number">2023</span>
+              <span class="about-stat-label">Founded</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-section">
+          <h2>Leadership Team</h2>
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-avatar">👨‍💻</div>
+              <h3>Dr. Sarah Chen</h3>
+              <p>CEO & Co-founder</p>
+              <small>Former AI Research Lead at Google</small>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">👩‍🔬</div>
+              <h3>Prof. Michael Okonkwo</h3>
+              <p>CTO & Co-founder</p>
+              <small>PhD in Computational Linguistics</small>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">👨‍🎓</div>
+              <h3>Emily Rodriguez</h3>
+              <p>Head of Education</p>
+              <small>Former Dean at Stanford</small>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- PRICING PAGE -->
+    <div id="pricing-template">
+      <section class="page-header">
+        <h1 class="page-title">Simple, <span class="gradient-text">Transparent</span> Pricing</h1>
+        <p class="page-description">Choose the plan that fits your needs</p>
+      </section>
+
+      <section class="pricing-section">
+        <div class="pricing-grid">
+          <div class="pricing-card" data-aos="fade-up">
+            <div class="pricing-badge">Free</div>
+            <h3>Basic</h3>
+            <div class="pricing-price">
+              <span class="price">$0</span>
+              <span class="period">/month</span>
+            </div>
+            <ul class="pricing-features">
+              <li>✓ 10 documents/month</li>
+              <li>✓ Basic web search</li>
+              <li>✓ Text analysis</li>
+              <li>✓ Email support</li>
+            </ul>
+            <a href="/signup/" class="pricing-btn">Get Started</a>
+          </div>
+
+          <div class="pricing-card popular" data-aos="fade-up" data-aos-delay="100">
+            <div class="pricing-badge">Most Popular</div>
+            <h3>Pro</h3>
+            <div class="pricing-price">
+              <span class="price">$29</span>
+              <span class="period">/month</span>
+            </div>
+            <ul class="pricing-features">
+              <li>✓ 500 documents/month</li>
+              <li>✓ Deep web search</li>
+              <li>✓ Academic databases</li>
+              <li>✓ API access</li>
+              <li>✓ Priority support</li>
+            </ul>
+            <a href="/signup/" class="pricing-btn primary">Start Free Trial</a>
+          </div>
+
+          <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="pricing-badge">Enterprise</div>
+            <h3>Custom</h3>
+            <div class="pricing-price">
+              <span class="price">Custom</span>
+            </div>
+            <ul class="pricing-features">
+              <li>✓ Unlimited documents</li>
+              <li>✓ Custom integration</li>
+              <li>✓ SLA guarantee</li>
+              <li>✓ Dedicated support</li>
+              <li>✓ On-premise option</li>
+            </ul>
+            <a href="/contact/" class="pricing-btn">Contact Sales</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- RESOURCES PAGE -->
+    <div id="resources-template">
+      <section class="page-header">
+        <h1 class="page-title">Learning <span class="gradient-text">Resources</span></h1>
+        <p class="page-description">Guides, tutorials, and best practices</p>
+      </section>
+
+      <section class="resources-section">
+        <div class="resources-grid">
+          <div class="resource-card">
+            <span class="resource-icon">📘</span>
+            <h3>Getting Started Guide</h3>
+            <p>Learn the basics of plagiarism detection</p>
+            <a href="#" class="resource-link">Read more →</a>
+          </div>
+          <div class="resource-card">
+            <span class="resource-icon">📹</span>
+            <h3>Video Tutorials</h3>
+            <p>Watch step-by-step guides</p>
+            <a href="#" class="resource-link">Watch now →</a>
+          </div>
+          <div class="resource-card">
+            <span class="resource-icon">📄</span>
+            <h3>Case Studies</h3>
+            <p>See how others use BRI AI</p>
+            <a href="#" class="resource-link">Explore →</a>
+          </div>
+          <div class="resource-card">
+            <span class="resource-icon">🔧</span>
+            <h3>API Documentation</h3>
+            <p>Integrate with your apps</p>
+            <a href="#" class="resource-link">View docs →</a>
+          </div>
+          <div class="resource-card">
+            <span class="resource-icon">📊</span>
+            <h3>Webinars</h3>
+            <p>Live and recorded sessions</p>
+            <a href="#" class="resource-link">Register →</a>
+          </div>
+          <div class="resource-card">
+            <span class="resource-icon">💬</span>
+            <h3>Community Forum</h3>
+            <p>Connect with other users</p>
+            <a href="#" class="resource-link">Join →</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- CONTACT PAGE -->
+    <div id="contact-template">
+      <section class="page-header">
+        <h1 class="page-title">Get in <span class="gradient-text">Touch</span></h1>
+        <p class="page-description">We're here to help</p>
+      </section>
+
+      <section class="contact-section">
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h2>Contact Information</h2>
+            <div class="contact-details">
+              <div class="contact-item">
+                <span class="contact-icon">📧</span>
+                <div>
+                  <h4>Email</h4>
+                  <p>support@briai.com</p>
+                  <p>sales@briai.com</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <span class="contact-icon">📞</span>
+                <div>
+                  <h4>Phone</h4>
+                  <p>+1 (555) 123-4567</p>
+                  <p>Mon-Fri, 9am-6pm EST</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <span class="contact-icon">📍</span>
+                <div>
+                  <h4>Office</h4>
+                  <p>123 AI Avenue</p>
+                  <p>San Francisco, CA 94105</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form">
+            <h2>Send a Message</h2>
+            <form id="contactForm">
+              <div class="form-group">
+                <input type="text" placeholder="Your Name" required>
+              </div>
+              <div class="form-group">
+                <input type="email" placeholder="Your Email" required>
+              </div>
+              <div class="form-group">
+                <select>
+                  <option>Select Subject</option>
+                  <option>General Inquiry</option>
+                  <option>Sales</option>
+                  <option>Support</option>
+                  <option>Partnership</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <textarea rows="5" placeholder="Your Message"></textarea>
+              </div>
+              <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- OVERVIEW PAGE (Sidebar) -->
+    <div id="overview-template">
+      <section class="page-header">
+        <h1 class="page-title">Platform <span class="gradient-text">Overview</span></h1>
+        <p class="page-description">Complete picture of our plagiarism detection ecosystem</p>
+      </section>
+
+      <section class="overview-section">
+        <div class="overview-stats">
+          <div class="overview-stat-card">
+            <span class="overview-stat-value">10M+</span>
+            <span class="overview-stat-label">Documents Processed</span>
+          </div>
+          <div class="overview-stat-card">
+            <span class="overview-stat-value">50B+</span>
+            <span class="overview-stat-label">Sources Indexed</span>
+          </div>
+          <div class="overview-stat-card">
+            <span class="overview-stat-value">150+</span>
+            <span class="overview-stat-label">Countries</span>
+          </div>
+        </div>
+
+        <div class="overview-features">
+          <h2>Key Capabilities</h2>
+          <div class="overview-grid">
+            <div class="overview-feature">
+              <span class="feature-number">01</span>
+              <h3>Deep Web Scanning</h3>
+              <p>Access to surface web, deep web, and academic databases</p>
+            </div>
+            <div class="overview-feature">
+              <span class="feature-number">02</span>
+              <h3>Real-time Analysis</h3>
+              <p>Results in under 500ms for most documents</p>
+            </div>
+            <div class="overview-feature">
+              <span class="feature-number">03</span>
+              <h3>Multi-language Support</h3>
+              <p>50+ languages with cross-lingual matching</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- WHAT IS PLAGIARISM PAGE (Sidebar) -->
+    <div id="plagiarism-template">
+      <section class="page-header">
+        <h1 class="page-title">What is <span class="gradient-text">Plagiarism?</span></h1>
+        <p class="page-description">Understanding academic integrity and content originality</p>
+      </section>
+
+      <section class="plagiarism-deep-section">
+        <div class="plagiarism-types-detailed">
+          <h2>Types of Plagiarism</h2>
+          <div class="types-grid">
+            <div class="type-detailed-card">
+              <h3>Direct Plagiarism</h3>
+              <p>Copying text word-for-word without attribution</p>
+              <div class="example">
+                <strong>Example:</strong> Copying a paragraph from a source without quotes or citation
+              </div>
+            </div>
+            <div class="type-detailed-card">
+              <h3>Mosaic Plagiarism</h3>
+              <p>Changing words while keeping original structure</p>
+              <div class="example">
+                <strong>Example:</strong> Replacing synonyms in a sentence while maintaining the same structure
+              </div>
+            </div>
+            <div class="type-detailed-card">
+              <h3>Idea Plagiarism</h3>
+              <p>Presenting someone's ideas as your own</p>
+              <div class="example">
+                <strong>Example:</strong> Using a unique research methodology without credit
+              </div>
+            </div>
+            <div class="type-detailed-card">
+              <h3>Self-Plagiarism</h3>
+              <p>Reusing your own previous work without citation</p>
+              <div class="example">
+                <strong>Example:</strong> Submitting the same paper to multiple classes
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="consequences-section">
+          <h2>Consequences</h2>
+          <div class="consequences-grid">
+            <div class="consequence-card">
+              <span class="consequence-icon">🎓</span>
+              <h3>Academic</h3>
+              <ul>
+                <li>Course failure</li>
+                <li>Expulsion</li>
+                <li>Degree revocation</li>
+              </ul>
+            </div>
+            <div class="consequence-card">
+              <span class="consequence-icon">⚖️</span>
+              <h3>Legal</h3>
+              <ul>
+                <li>Copyright infringement</li>
+                <li>Financial penalties</li>
+                <li>Lawsuits</li>
+              </ul>
+            </div>
+            <div class="consequence-card">
+              <span class="consequence-icon">💼</span>
+              <h3>Professional</h3>
+              <ul>
+                <li>Termination</li>
+                <li>Reputation damage</li>
+                <li>Career limitations</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- AI TECHNOLOGY PAGE (Sidebar) -->
+    <div id="technology-template">
+      <section class="page-header">
+        <h1 class="page-title">AI <span class="gradient-text">Technology</span></h1>
+        <p class="page-description">The advanced algorithms behind our detection</p>
+      </section>
+
+      <section class="technology-deep-section">
+        <div class="tech-architecture">
+          <h2>How It Works</h2>
+          <div class="tech-steps-vertical">
+            <div class="tech-step">
+              <div class="tech-step-number">1</div>
+              <div class="tech-step-content">
+                <h3>Text Vectorization</h3>
+                <p>Convert text to numerical vectors using BERT embeddings</p>
+              </div>
+            </div>
+            <div class="tech-step">
+              <div class="tech-step-number">2</div>
+              <div class="tech-step-content">
+                <h3>Semantic Analysis</h3>
+                <p>Understand meaning beyond exact word matching</p>
+              </div>
+            </div>
+            <div class="tech-step">
+              <div class="tech-step-number">3</div>
+              <div class="tech-step-content">
+                <h3>Database Comparison</h3>
+                <p>Compare against billions of indexed sources</p>
+              </div>
+            </div>
+            <div class="tech-step">
+              <div class="tech-step-number">4</div>
+              <div class="tech-step-content">
+                <h3>Score Calculation</h3>
+                <p>Generate similarity scores with confidence levels</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-metrics">
+          <h2>Performance Metrics</h2>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-value">99.9%</span>
+              <span class="metric-label">Accuracy</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-value">0.5s</span>
+              <span class="metric-label">Avg Response</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-value">50+</span>
+              <span class="metric-label">Languages</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- USE CASES PAGE (Sidebar) -->
+    <div id="usecases-template">
+      <section class="page-header">
+        <h1 class="page-title">Use <span class="gradient-text">Cases</span></h1>
+        <p class="page-description">Real-world applications of BRI AI</p>
+      </section>
+
+      <section class="usecases-deep-section">
+        <div class="usecase-cards">
+          <div class="usecase-card-detailed">
+            <div class="usecase-icon">🎓</div>
+            <h3>Academic Institutions</h3>
+            <p>Universities and schools use BRI AI to maintain academic integrity across thousands of submissions.</p>
+            <ul>
+              <li>Student assignment checking</li>
+              <li>Thesis verification</li>
+              <li>Research paper validation</li>
+            </ul>
+          </div>
+          <div class="usecase-card-detailed">
+            <div class="usecase-icon">💼</div>
+            <h3>Publishing Houses</h3>
+            <p>Book publishers and journals ensure content originality before publication.</p>
+            <ul>
+              <li>Manuscript screening</li>
+              <li>Author verification</li>
+              <li>Copyright protection</li>
+            </ul>
+          </div>
+          <div class="usecase-card-detailed">
+            <div class="usecase-icon">🏢</div>
+            <h3>Corporations</h3>
+            <p>Businesses protect their intellectual property and marketing content.</p>
+            <ul>
+              <li>Internal document checking</li>
+              <li>Marketing content verification</li>
+              <li>Competitor monitoring</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- LIVE DEMO PAGE (Sidebar) -->
+    <div id="demo-template">
+      <section class="page-header">
+        <h1 class="page-title">Live <span class="gradient-text">Demo</span></h1>
+        <p class="page-description">Try our plagiarism checker right now</p>
+      </section>
+
+      <section class="demo-full-section">
+        <div class="demo-container-full">
+          <div class="demo-input-area">
+            <h3>Enter Text to Check</h3>
+            <textarea id="demoText" rows="8" placeholder="Paste your text here...">Artificial intelligence has revolutionized the way we approach plagiarism detection. Modern systems use deep learning to understand context and semantics.</textarea>
+            <button class="demo-check-btn" id="checkDemoBtn">Check Plagiarism</button>
+          </div>
+          <div class="demo-results-area" id="demoResults">
+            <h3>Results</h3>
+            <div class="demo-score">
+              <div class="score-circle">
+                <span class="score-number">0%</span>
+              </div>
+            </div>
+            <div class="demo-sources">
+              <p>Click "Check Plagiarism" to see results</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
+    // Initialize AOS
     AOS.init({
       duration: 800,
-      once: true
+      once: true,
+      offset: 100
+    });
+
+    // Page Data - Maps to templates
+    const pages = {
+      home: 'home-template',
+      platform: 'platform-template',
+      features: 'features-template',
+      about: 'about-template',
+      pricing: 'pricing-template',
+      resources: 'resources-template',
+      contact: 'contact-template',
+      overview: 'overview-template',
+      plagiarism: 'plagiarism-template',
+      technology: 'technology-template',
+      usecases: 'usecases-template',
+      demo: 'demo-template'
+    };
+
+    // Current active page/sidebar
+    let currentPage = 'home';
+    let currentSidebar = 'overview';
+
+    // Load content function
+    function loadContent(pageId, sidebarId = null) {
+      const mainContent = document.getElementById('mainContent');
+      
+      // Determine which template to load
+      let templateId;
+      if (sidebarId && pages[sidebarId]) {
+        templateId = pages[sidebarId];
+        currentSidebar = sidebarId;
+        
+        // Update sidebar active state
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+          link.classList.remove('active');
+          if (link.dataset.sidebar === sidebarId) {
+            link.classList.add('active');
+          }
+        });
+      } else if (pages[pageId]) {
+        templateId = pages[pageId];
+        currentPage = pageId;
+        
+        // Update navbar active state
+        document.querySelectorAll('.nav-link').forEach(link => {
+          link.classList.remove('active');
+          if (link.dataset.page === pageId) {
+            link.classList.add('active');
+          }
+        });
+      } else {
+        templateId = 'home-template';
+      }
+
+      const template = document.getElementById(templateId);
+      if (template) {
+        mainContent.innerHTML = template.innerHTML;
+        // Reinitialize AOS for new content
+        AOS.refresh();
+      }
+
+      // Close mobile menu if open
+      document.querySelector('.nav-links').classList.remove('show');
+      document.getElementById('mobileOverlay').classList.remove('active');
+      document.getElementById('mobileMenuBtn').innerHTML = '☰';
+    }
+
+    // Navbar click handlers
+    document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = link.dataset.page;
+        loadContent(page, null);
+        
+        // Update URL hash without scrolling
+        history.pushState(null, null, `#${page}`);
+      });
+    });
+
+    // Sidebar click handlers
+    document.querySelectorAll('.sidebar-link[data-sidebar]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sidebar = link.dataset.sidebar;
+        loadContent(currentPage, sidebar);
+        
+        // Update URL hash
+        history.pushState(null, null, `#${currentPage}-${sidebar}`);
+      });
+    });
+
+    // Sidebar trigger links (from main content)
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.sidebar-trigger')) {
+        e.preventDefault();
+        const trigger = e.target.closest('.sidebar-trigger');
+        const sidebar = trigger.dataset.sidebar;
+        if (sidebar) {
+          loadContent(currentPage, sidebar);
+        }
+      }
+      
+      if (e.target.closest('.nav-trigger')) {
+        e.preventDefault();
+        const trigger = e.target.closest('.nav-trigger');
+        const page = trigger.dataset.page;
+        if (page) {
+          loadContent(page, null);
+        }
+      }
+    });
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', () => {
+      const hash = window.location.hash.substring(1);
+      if (hash.includes('-')) {
+        const [page, sidebar] = hash.split('-');
+        loadContent(page, sidebar);
+      } else if (hash) {
+        loadContent(hash, null);
+      } else {
+        loadContent('home', null);
+      }
+    });
+
+    // Load initial content based on URL hash
+    const initialHash = window.location.hash.substring(1);
+    if (initialHash.includes('-')) {
+      const [page, sidebar] = initialHash.split('-');
+      loadContent(page, sidebar);
+    } else if (initialHash && pages[initialHash]) {
+      loadContent(initialHash, null);
+    } else {
+      loadContent('home', null);
+    }
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Mobile menu functionality
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    const navLinks = document.querySelector('.nav-links');
+
+    function toggleMobileMenu() {
+      navLinks.classList.toggle('show');
+      mobileOverlay.classList.toggle('active');
+      
+      if (navLinks.classList.contains('show')) {
+        mobileMenuBtn.innerHTML = '✕';
+        document.body.style.overflow = 'hidden';
+      } else {
+        mobileMenuBtn.innerHTML = '☰';
+        document.body.style.overflow = '';
+      }
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+    mobileOverlay.addEventListener('click', () => {
+      navLinks.classList.remove('show');
+      mobileOverlay.classList.remove('active');
+      mobileMenuBtn.innerHTML = '☰';
+      document.body.style.overflow = '';
+    });
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.nav-link, .nav-btn').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('show');
+        mobileOverlay.classList.remove('active');
+        mobileMenuBtn.innerHTML = '☰';
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Demo functionality
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'checkDemoBtn') {
+        const demoText = document.getElementById('demoText');
+        const demoResults = document.getElementById('demoResults');
+        
+        if (demoText && demoResults) {
+          const text = demoText.value;
+          // Simple mock calculation
+          const words = text.split(/\s+/).length;
+          const mockScore = Math.min(35, Math.floor(words / 10) + 5);
+          
+          demoResults.innerHTML = `
+            <h3>Results</h3>
+            <div class="demo-score">
+              <div class="score-circle">
+                <span class="score-number">${mockScore}%</span>
+              </div>
+            </div>
+            <div class="demo-sources">
+              <p>Found ${Math.floor(mockScore / 5)} potential sources</p>
+              <ul>
+                <li>Source 1: ${Math.floor(mockScore * 0.6)}% match</li>
+                <li>Source 2: ${Math.floor(mockScore * 0.3)}% match</li>
+              </ul>
+            </div>
+          `;
+        }
+      }
     });
 
     // Particle background
     function createParticles() {
-      const container = document.createElement('div');
-      container.className = 'particles';
-      document.body.appendChild(container);
-
+      const container = document.getElementById('particles');
       for (let i = 0; i < 50; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = Math.random() * 100 + '%';
         particle.style.animationDelay = Math.random() * 20 + 's';
         particle.style.animationDuration = 15 + Math.random() * 10 + 's';
-        particle.style.width = 2 + Math.random() * 8 + 'px';
+        particle.style.width = 2 + Math.random() * 4 + 'px';
         particle.style.height = particle.style.width;
         container.appendChild(particle);
       }
     }
     createParticles();
   </script>
-
-  <style>
-    /* Additional styles for home page */
-    .hero-badge {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-block;
-      margin-bottom: 20px;
-    }
-
-    .hero-description {
-      font-size: 1.2rem;
-      color: #e5e7eb;
-      max-width: 600px;
-      margin: 20px 0;
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 40px;
-      margin: 40px 0;
-    }
-
-    .stat {
-      text-align: center;
-    }
-
-    .stat-number {
-      display: block;
-      font-size: 2rem;
-      font-weight: 800;
-      color: white;
-    }
-
-    .stat-label {
-      font-size: 0.9rem;
-      color: #e5e7eb;
-    }
-
-    .hero-image {
-      position: relative;
-    }
-
-    .floating-card {
-      position: absolute;
-      background: white;
-      padding: 15px 25px;
-      border-radius: 50px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    .card-1 {
-      top: 20%;
-      left: -50px;
-      animation-delay: 0s;
-    }
-
-    .card-2 {
-      top: 50%;
-      right: -50px;
-      animation-delay: 0.5s;
-    }
-
-    .card-3 {
-      bottom: 20%;
-      left: -30px;
-      animation-delay: 1s;
-    }
-
-    .card-icon {
-      font-size: 1.5rem;
-    }
-
-    .steps-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      margin-top: 40px;
-    }
-
-    .step-card {
-      background: white;
-      padding: 30px 20px;
-      border-radius: 20px;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .step-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
-    }
-
-    .step-number {
-      position: absolute;
-      top: -15px;
-      left: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-    }
-
-    .step-icon {
-      font-size: 2.5rem;
-      margin-bottom: 15px;
-    }
-
-    .feature-list {
-      list-style: none;
-      padding: 0;
-      margin: 20px 0;
-    }
-
-    .feature-list li {
-      padding: 10px 0;
-      font-size: 1.1rem;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .feature-list li:last-child {
-      border-bottom: none;
-    }
-
-    .stats-mini {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 16px;
-      margin-top: 20px;
-    }
-
-    .stat-mini {
-      text-align: center;
-    }
-
-    .stat-mini-number {
-      display: block;
-      font-size: 2rem;
-      font-weight: 800;
-    }
-
-    .cta-link {
-      display: inline-block;
-      margin-top: 20px;
-      color: var(--primary);
-      font-weight: 600;
-      text-decoration: none;
-      border-bottom: 2px solid transparent;
-      transition: all 0.3s ease;
-    }
-
-    .cta-link:hover {
-      border-bottom-color: var(--primary);
-    }
-
-    .faq-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
-    }
-
-    .faq-item {
-      background: white;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    .faq-item h4 {
-      margin-bottom: 10px;
-      color: var(--dark);
-    }
-
-    .faq-item p {
-      color: #6b7280;
-      line-height: 1.6;
-    }
-
-    .cta-section {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 30px;
-      padding: 60px 40px;
-      text-align: center;
-      color: white;
-      margin: 60px 0;
-    }
-
-    .cta-content h2 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-    }
-
-    .cta-content p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-      opacity: 0.9;
-    }
-
-    .cta-button {
-      display: inline-block;
-      background: white;
-      color: var(--primary);
-      padding: 15px 40px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.2rem;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .cta-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    .footer-content {
-      text-align: center;
-      padding: 40px 0;
-    }
-
-    .footer-brand {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-bottom: 20px;
-    }
-
-    .footer-links a {
-      color: #6b7280;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .footer-links a:hover {
-      color: var(--primary);
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
-
-    @media (max-width: 768px) {
-      .hero-stats {
-        flex-direction: column;
-        gap: 20px;
-      }
-      
-      .floating-card {
-        display: none;
-      }
-      
-      .steps-container {
-        grid-template-columns: 1fr;
-      }
-      
-      .cta-section {
-        padding: 40px 20px;
-      }
-      
-      .cta-content h2 {
-        font-size: 2rem;
-      }
-    }
-  </style>
 </body>
 </html>
