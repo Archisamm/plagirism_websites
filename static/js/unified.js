@@ -1,12 +1,247 @@
+// ================= STORAGE MANAGER =================
+class StorageManager {
+    constructor() {
+        this.storageKey = 'bri_ai_user_data';
+        this.userId = this.getUserId();
+        this.loadData();
+    }
+
+    getUserId() {
+        // Try to get from localStorage first
+        let userId = localStorage.getItem('bri_ai_user_id');
+        
+        // If not found, create a new one
+        if (!userId) {
+            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('bri_ai_user_id', userId);
+        }
+        
+        return userId;
+    }
+
+    loadData() {
+        const stored = localStorage.getItem(this.storageKey);
+        if (stored) {
+            try {
+                const data = JSON.parse(stored);
+                
+                // Initialize all AppState properties from stored data
+                AppState.analyses = data.analyses || [];
+                AppState.results = data.results || [];
+                AppState.reports = data.reports || [];
+                AppState.citations = data.citations || [];
+                AppState.similarities = data.similarities || [];
+                AppState.history = data.history || [];
+                AppState.copyright = data.copyright || {
+                    risk_level: 'low',
+                    risk_percentage: 0,
+                    checked_documents: 0,
+                    flagged: 0,
+                    protected: 0,
+                    flagged_items: []
+                };
+                AppState.settings = data.settings || {
+                    displayName: localStorage.getItem('display_name') || 'User',
+                    email: localStorage.getItem('email') || '',
+                    institution: localStorage.getItem('institution') || '',
+                    phone: localStorage.getItem('phone') || '',
+                    apiKey: localStorage.getItem('api_key') || 'bri_api_' + Math.random().toString(36).substr(2, 16)
+                };
+                AppState.stats = data.stats || {
+                    totalAnalyses: 0,
+                    todayAnalyses: 0,
+                    avgUniqueness: 0
+                };
+                
+                console.log('📦 Data loaded from storage:', AppState);
+            } catch (e) {
+                console.error('Error loading stored data:', e);
+                this.initializeDefaultState();
+            }
+        } else {
+            this.initializeDefaultState();
+        }
+        
+        // Update all sections after loading
+        this.refreshAllSections();
+    }
+
+    initializeDefaultState() {
+        AppState.analyses = [];
+        AppState.results = [];
+        AppState.reports = [];
+        AppState.citations = [];
+        AppState.similarities = [];
+        AppState.history = [];
+        AppState.copyright = {
+            risk_level: 'low',
+            risk_percentage: 0,
+            checked_documents: 0,
+            flagged: 0,
+            protected: 0,
+            flagged_items: []
+        };
+        AppState.settings = {
+            displayName: localStorage.getItem('display_name') || 'User',
+            email: localStorage.getItem('email') || '',
+            institution: localStorage.getItem('institution') || '',
+            phone: localStorage.getItem('phone') || '',
+            apiKey: localStorage.getItem('api_key') || 'bri_api_' + Math.random().toString(36).substr(2, 16)
+        };
+        AppState.stats = {
+            totalAnalyses: 0,
+            todayAnalyses: 0,
+            avgUniqueness: 0
+        };
+    }
+
+    saveData() {
+        const dataToStore = {
+            analyses: AppState.analyses,
+            results: AppState.results,
+            reports: AppState.reports,
+            citations: AppState.citations,
+            similarities: AppState.similarities,
+            history: AppState.history,
+            copyright: AppState.copyright,
+            settings: AppState.settings,
+            stats: AppState.stats,
+            lastUpdated: new Date().toISOString(),
+            userId: this.userId
+        };
+        
+        localStorage.setItem(this.storageKey, JSON.stringify(dataToStore));
+        console.log('💾 Data saved to storage');
+        
+        // Optional: Sync with backend if user is logged in
+        // this.syncWithBackend(dataToStore);
+    }
+
+    async syncWithBackend(data) {
+        // This is optional - if you have a backend API
+        try {
+            const response = await fetch('/api/sync-user-data/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                },
+                body: JSON.stringify(data),
+                credentials: 'same-origin'
+            });
+            
+            if (response.ok) {
+                console.log('✅ Data synced with backend');
+            }
+        } catch (e) {
+            console.log('Backend sync skipped (offline or no backend)');
+        }
+    }
+
+    getCsrfToken() {
+        const name = 'csrftoken';
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    refreshAllSections() {
+        // Refresh all sections with stored data
+        setTimeout(() => {
+            if (window.resultsSection) {
+                window.resultsSection.results = AppState.results;
+                window.resultsSection.render();
+                window.resultsSection.updateBadge();
+            }
+            
+            if (window.reportsSection) {
+                window.reportsSection.reports = AppState.reports;
+                window.reportsSection.render();
+                window.reportsSection.updateBadge();
+            }
+            
+            if (window.citationsSection) {
+                window.citationsSection.citations = AppState.citations;
+                window.citationsSection.render();
+            }
+            
+            if (window.similaritySection) {
+                window.similaritySection.similarities = AppState.similarities;
+                window.similaritySection.render();
+            }
+            
+            if (window.historySection) {
+                window.historySection.history = AppState.history;
+                window.historySection.render();
+                window.historySection.updateBadge();
+            }
+            
+            if (window.copyrightSection) {
+                window.copyrightSection.data = AppState.copyright;
+                window.copyrightSection.render();
+            }
+            
+            if (window.settingsSection) {
+                window.settingsSection.settings = AppState.settings;
+                window.settingsSection.render();
+            }
+            
+            // Update header stats
+            this.updateHeaderStats();
+        }, 100);
+    }
+
+    updateHeaderStats() {
+        const totalEl = document.getElementById('totalAnalyses');
+        const todayEl = document.getElementById('todayAnalyses');
+        const uniqueEl = document.getElementById('uniqueContent');
+        
+        if (totalEl) {
+            const valueEl = totalEl.querySelector('.stat-value');
+            if (valueEl) valueEl.textContent = AppState.stats.totalAnalyses;
+        }
+        
+        if (todayEl) {
+            const today = new Date().toDateString();
+            const todayCount = AppState.analyses.filter(a => 
+                new Date(a.created_at).toDateString() === today
+            ).length;
+            const valueEl = todayEl.querySelector('.stat-value');
+            if (valueEl) valueEl.textContent = todayCount;
+        }
+        
+        if (uniqueEl) {
+            const valueEl = uniqueEl.querySelector('.stat-value');
+            if (valueEl) valueEl.textContent = AppState.stats.avgUniqueness + '%';
+        }
+    }
+}
+
 // ================= GLOBAL STATE =================
 const AppState = {
-    currentAnalysis: null,
-    analysisHistory: [],
+    analyses: [],
+    results: [],
     reports: [],
     citations: [],
-    similarityData: [],
-    historyItems: [],
-    copyrightData: null,
+    similarities: [],
+    history: [],
+    copyright: {
+        risk_level: 'low',
+        risk_percentage: 0,
+        checked_documents: 0,
+        flagged: 0,
+        protected: 0,
+        flagged_items: []
+    },
     settings: {
         displayName: localStorage.getItem('display_name') || 'User',
         email: localStorage.getItem('email') || '',
@@ -20,6 +255,9 @@ const AppState = {
         avgUniqueness: 0
     }
 };
+
+// Initialize storage manager
+const storageManager = new StorageManager();
 
 // ================= SECTION MANAGER =================
 class SectionManager {
@@ -108,14 +346,17 @@ class ResultsSection {
     constructor() {
         this.container = document.getElementById('results-container');
         this.loader = document.getElementById('results-loader');
-        this.results = [];
+        this.results = AppState.results;
         window.resultsSection = this;
     }
 
     addResult(analysis) {
         this.results.unshift(analysis);
+        AppState.results = this.results;
+        AppState.analyses.push(analysis);
         this.updateBadge();
         this.render();
+        storageManager.saveData();
     }
 
     updateBadge() {
@@ -212,7 +453,7 @@ class ResultsSection {
                     id: btn.dataset.id,
                     title: btn.dataset.title,
                     score: btn.dataset.score,
-                    breakdown: JSON.parse(btn.dataset.breakdown),
+                    breakdown: JSON.parse(btn.dataset.breakdown || '{}'),
                     sources: JSON.parse(btn.dataset.sources || '[]')
                 };
                 this.downloadReport(reportData);
@@ -329,7 +570,7 @@ class ReportsSection {
     constructor() {
         this.container = document.getElementById('reports-container');
         this.loader = document.getElementById('reports-loader');
-        this.reports = [];
+        this.reports = AppState.reports;
         window.reportsSection = this;
     }
 
@@ -344,8 +585,10 @@ class ReportsSection {
             sources: analysis.sources
         };
         this.reports.unshift(report);
+        AppState.reports = this.reports;
         this.updateBadge();
         this.render();
+        storageManager.saveData();
     }
 
     updateBadge() {
@@ -484,7 +727,7 @@ class CitationsSection {
     constructor() {
         this.container = document.getElementById('citations-container');
         this.loader = document.getElementById('citations-loader');
-        this.citations = [];
+        this.citations = AppState.citations;
         window.citationsSection = this;
     }
 
@@ -492,7 +735,9 @@ class CitationsSection {
         // Generate citations from analysis
         const citations = this.generateCitations(analysis);
         this.citations = [...this.citations, ...citations];
+        AppState.citations = this.citations;
         this.render();
+        storageManager.saveData();
     }
 
     generateCitations(analysis) {
@@ -504,7 +749,7 @@ class CitationsSection {
                 citations.push({
                     id: `cite_${analysis.id}_${index}`,
                     text: `"${analysis.preview?.substring(0, 100)}..." - Similar content found in external source`,
-                    format: 'APA',
+                    format: ['APA', 'MLA', 'Chicago', 'IEEE'][Math.floor(Math.random() * 4)],
                     page: Math.floor(Math.random() * 100) + 1,
                     correct: Math.random() > 0.3,
                     suggestion: 'Please verify the original source and add proper attribution'
@@ -640,7 +885,7 @@ class SimilaritySection {
     constructor() {
         this.container = document.getElementById('similarity-container');
         this.loader = document.getElementById('similarity-loader');
-        this.similarities = [];
+        this.similarities = AppState.similarities;
         window.similaritySection = this;
     }
 
@@ -658,7 +903,9 @@ class SimilaritySection {
             }
         };
         this.similarities.unshift(similarity);
+        AppState.similarities = this.similarities;
         this.render();
+        storageManager.saveData();
     }
 
     render() {
@@ -790,7 +1037,7 @@ class HistorySection {
     constructor() {
         this.container = document.getElementById('history-container');
         this.loader = document.getElementById('history-loader');
-        this.history = [];
+        this.history = AppState.history;
         this.currentFilter = 'all';
         window.historySection = this;
     }
@@ -805,8 +1052,10 @@ class HistorySection {
             verdict: analysis.score < 15 ? 'Original' : (analysis.score < 30 ? 'Suspicious' : 'Plagiarized')
         };
         this.history.unshift(historyItem);
+        AppState.history = this.history;
         this.updateBadge();
         this.render();
+        storageManager.saveData();
     }
 
     updateBadge() {
@@ -983,14 +1232,7 @@ class CopyrightSection {
     constructor() {
         this.container = document.getElementById('copyright-container');
         this.loader = document.getElementById('copyright-loader');
-        this.data = {
-            risk_level: 'low',
-            risk_percentage: 0,
-            checked_documents: 0,
-            flagged: 0,
-            protected: 0,
-            flagged_items: []
-        };
+        this.data = AppState.copyright;
         window.copyrightSection = this;
     }
 
@@ -1023,7 +1265,9 @@ class CopyrightSection {
             this.data.risk_percentage = Math.floor(riskRatio * 100);
         }
 
+        AppState.copyright = this.data;
         this.render();
+        storageManager.saveData();
     }
 
     render() {
@@ -1268,13 +1512,17 @@ class SettingsSection {
             localStorage.setItem('phone', phone);
         }
 
+        AppState.settings = this.settings;
+        storageManager.saveData();
         this.showToast('Profile saved successfully!');
     }
 
     generateApiKey() {
         const newKey = 'bri_api_' + Math.random().toString(36).substr(2, 16);
         this.settings.apiKey = newKey;
+        AppState.settings = this.settings;
         localStorage.setItem('api_key', newKey);
+        storageManager.saveData();
         
         const apiKeyElement = document.getElementById('api-key');
         if (apiKeyElement) {
@@ -1493,10 +1741,31 @@ class UploadHandler {
             (AppState.stats.avgUniqueness * (AppState.stats.totalAnalyses - 1) + (100 - score)) / 
             AppState.stats.totalAnalyses
         );
+        AppState.stats.todayAnalyses = AppState.analyses.filter(a => 
+            new Date(a.created_at).toDateString() === new Date().toDateString()
+        ).length;
 
         // Update header stats
-        document.getElementById('totalAnalyses').querySelector('.stat-value').textContent = AppState.stats.totalAnalyses;
-        document.getElementById('uniqueContent').querySelector('.stat-value').textContent = AppState.stats.avgUniqueness + '%';
+        const totalEl = document.getElementById('totalAnalyses');
+        const todayEl = document.getElementById('todayAnalyses');
+        const uniqueEl = document.getElementById('uniqueContent');
+        
+        if (totalEl) {
+            const valueEl = totalEl.querySelector('.stat-value');
+            if (valueEl) valueEl.textContent = AppState.stats.totalAnalyses;
+        }
+        
+        if (todayEl) {
+            const valueEl = todayEl.querySelector('.stat-value');
+            if (valueEl) valueEl.textContent = AppState.stats.todayAnalyses;
+        }
+        
+        if (uniqueEl) {
+            const valueEl = uniqueEl.querySelector('.stat-value');
+            if (valueEl) valueEl.textContent = AppState.stats.avgUniqueness + '%';
+        }
+
+        storageManager.saveData();
 
         // Show preview
         this.showPreview(analysis);

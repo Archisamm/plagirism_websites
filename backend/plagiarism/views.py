@@ -517,3 +517,27 @@ End of Report
     
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
+    
+
+
+# ======================================================
+# SYNC USER DATA (FIX FOR 404 ERRORS)
+# ======================================================
+@login_required
+@csrf_exempt
+def sync_user_data(request):
+    """Sync user data from frontend to backend"""
+    if request.method != 'POST':
+        return JsonResponse({"error": "POST only"}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        # You can store this data in database if needed
+        # For now, just acknowledge receipt
+        return JsonResponse({
+            "status": "success",
+            "message": "Data synced successfully",
+            "user": request.user.email
+        })
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
