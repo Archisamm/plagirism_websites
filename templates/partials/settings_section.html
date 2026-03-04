@@ -1,0 +1,81 @@
+{% load static %}
+<div class="section-content" id="settings-content">
+    <h2 class="section-title">
+        <span class="section-title-icon">⚙️</span>
+        Settings
+    </h2>
+
+    <div class="settings-grid">
+        <div class="settings-card">
+            <h3>Profile Settings</h3>
+            <form id="profile-form" class="settings-form">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" id="display_name" value="{{ user.display_name }}" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" value="{{ user.email }}" disabled class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Institution</label>
+                    <input type="text" id="institution" value="{{ user.institution }}" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="phone" value="{{ user.phone }}" class="form-input">
+                </div>
+                <button type="submit" class="btn-primary">Save Changes</button>
+            </form>
+        </div>
+
+        <div class="settings-card">
+            <h3>Analysis Preferences</h3>
+            <div class="preferences-list">
+                <label class="checkbox-label">
+                    <input type="checkbox" checked> Deep Web Search
+                    <span class="checkbox-description">Search deep web for matches</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" checked> Academic Databases
+                    <span class="checkbox-description">Include Scopus, IEEE, etc.</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox"> Auto-Citation Check
+                    <span class="checkbox-description">Automatically verify citations</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox"> Email Reports
+                    <span class="checkbox-description">Send reports via email</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3>Notification Settings</h3>
+            <div class="preferences-list">
+                <label class="checkbox-label">
+                    <input type="checkbox" checked> Analysis Complete
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" checked> Copyright Alerts
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox"> Weekly Summary
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox"> Marketing Emails
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3>API Access</h3>
+            <div class="api-key-display">
+                <code>{{ user.api_key|default:"API Key not generated" }}</code>
+                <button class="btn-small btn-outline">Generate New</button>
+            </div>
+            <p class="help-text">Use this key to access our API programmatically</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+{% load static %}
+<div class="section-content" id="results-content">
+    <h2 class="section-title">
+        <span class="section-title-icon">📊</span>
+        Analysis Results
+        <span class="section-date" id="results-date"></span>
+    </h2>
+
+    {% if results %}
+        {% for result in results %}
+        <div class="result-card" data-result-id="{{ result.id }}">
+            <div class="result-header">
+                <div>
+                    <h3 class="result-title">{{ result.title }}</h3>
+                    <span class="result-date">{{ result.created_at|date:"F d, Y - h:i A" }}</span>
+                </div>
+                <span class="result-badge {% if result.score < 15 %}badge-success{% elif result.score < 30 %}badge-warning{% else %}badge-danger{% endif %}">
+                    {{ result.score }}% Match
+                </span>
+            </div>
+            
+            <div class="result-preview">
+                <p>{{ result.preview|truncatechars:200 }}</p>
+            </div>
+
+            <div class="result-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Identical</span>
+                    <span class="stat-value">{{ result.breakdown.identical }}%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Minor Changes</span>
+                    <span class="stat-value">{{ result.breakdown.minor }}%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Paraphrased</span>
+                    <span class="stat-value">{{ result.breakdown.paraphrased }}%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Unique</span>
+                    <span class="stat-value">{{ result.breakdown.unique }}%</span>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <button class="btn-small btn-primary view-details" data-result-id="{{ result.id }}">
+                    <span class="btn-icon">👁️</span> View Details
+                </button>
+                <button class="btn-small btn-success download-report" data-report-id="{{ result.report_id }}">
+                    <span class="btn-icon">📥</span> Download Report
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <h3>No Results Yet</h3>
+            <p>Upload a document or paste text to see analysis results here.</p>
+            <a href="#upload" class="btn-primary">Upload Now</a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <h3>No Results Yet</h3>
+            <p>Upload a document or paste text to see analysis results here.</p>
+            <a href="#upload" class="btn-primary">Upload Now</a>
+        </div>
+    {% endif %}
+</div>

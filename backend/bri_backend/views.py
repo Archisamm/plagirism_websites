@@ -1,48 +1,91 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
-def home(request):
-    return render(request, 'index.html')
-
-def signup_page(request):
-    return render(request, 'signup.html')
-
-def login_page(request):
-    return render(request, 'login.html')
-
-def dashboard_page(request):
-    return render(request, 'dashboard.html')
-
-def upload_page(request):
-    return render(request, 'upload.html')
-
-def forgot_password(request):
-    return render(request, "forgot_password.html")
+# ==============================
+# PUBLIC LANDING PAGES (No login required)
+# ==============================
 
 def public_home(request):
+    """Main landing page with AI features"""
     return render(request, "home_public.html")
 
+def home(request):
+    """Alternative home page - redirect to public home"""
+    return redirect('public_home')
 
+def index(request):
+    """Index page - redirect to public home"""
+    return redirect('public_home')
 
+def features_page(request):
+    """Features section - uses same landing page with anchor"""
+    return render(request, "home_public.html")
 
-# Student
-def student_dashboard(request): return render(request, "student/dashboard.html")
-def student_upload(request): return render(request, "student/upload.html")
-def student_results(request): return render(request, "student/results.html")
-def student_reports(request): return render(request, "student/reports.html")
+def pricing_page(request):
+    """Pricing section - uses same landing page with anchor"""
+    return render(request, "home_public.html")
 
-# Professional
-def professional_dashboard(request): return render(request, "professional/dashboard.html")
-def professional_upload(request): return render(request, "professional/upload.html")
-def professional_history(request): return render(request, "professional/history.html")
-def professional_reports(request): return render(request, "professional/reports.html")
-def professional_copyright(request): return render(request, "professional/copyright.html")
+def about_page(request):
+    """About section - uses same landing page with anchor"""
+    return render(request, "home_public.html")
 
-# Researcher
-def researcher_dashboard(request): return render(request, "researcher/dashboard.html")
-def researcher_upload(request): return render(request, "researcher/upload.html")
-def researcher_similarity(request): return render(request, "researcher/similarity.html")
-def researcher_citations(request): return render(request, "researcher/citations.html")
-def researcher_results(request): return render(request, "researcher/results.html")
-def researcher_reports(request): return render(request, "researcher/reports.html")
+def contact_page(request):
+    """Contact section - uses same landing page with anchor"""
+    return render(request, "home_public.html")
 
+# ==============================
+# AUTHENTICATION PAGES (Public)
+# ==============================
 
+def signup_page(request):
+    """Signup page"""
+    return render(request, "signup.html")
+
+def forgot_password(request):
+    """Forgot password page"""
+    return render(request, "forgot_password.html")
+
+# ==============================
+# PROTECTED ANALYSIS PAGE (Login required)
+# ==============================
+
+@login_required(login_url='/login/')
+def unified_dashboard(request):
+    """Single unified analysis page for authenticated users"""
+    return render(request, "unified.html")
+
+# Alias for backward compatibility
+@login_required(login_url='/login/')
+def unified_upload(request):
+    """Alias for dashboard"""
+    return redirect('unified_dashboard')
+
+@login_required(login_url='/login/')
+def unified_results(request):
+    """Alias for dashboard"""
+    return redirect('unified_dashboard')
+
+@login_required(login_url='/login/')
+def unified_reports(request):
+    """Alias for dashboard"""
+    return redirect('unified_dashboard')
+
+@login_required(login_url='/login/')
+def unified_history(request):
+    """Alias for dashboard"""
+    return redirect('unified_dashboard')
+
+@login_required(login_url='/login/')
+def unified_copyright(request):
+    """Alias for dashboard"""
+    return redirect('unified_dashboard')
+
+@login_required(login_url='/login/')
+def unified_similarity(request):
+    """Alias for dashboard"""
+    return redirect('unified_dashboard')
+
+@login_required(login_url='/login/')
+def unified_citations(request):
+    """Alias for dashboard"""
+    return redirect('unified_dashboard')

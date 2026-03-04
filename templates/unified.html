@@ -1,0 +1,339 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BRI AI - Unified Plagiarism Detection Platform</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/unified.css' %}">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+    <!-- Particle Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar"></nav>
+
+    <!-- Main Unified Container -->
+    <div class="unified-container">
+        
+        <!-- Header Section -->
+        <div class="header">
+            <h1 class="main-title">
+                <span class="main-title-icon">✨</span>
+                BRI AI Platform
+                <span class="main-title-icon">✨</span>
+            </h1>
+            <p class="subtitle" id="current-date"></p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-info">
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Documents Analyzed</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <div class="stat-value">98%</div>
+                    <div class="stat-label">Accuracy Rate</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-info">
+                    <div class="stat-value">2.5s</div>
+                    <div class="stat-label">Avg. Analysis Time</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-info">
+                    <div class="stat-value">50+</div>
+                    <div class="stat-label">Languages</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <h2 class="section-title">
+            <span class="section-title-icon">⚡</span>
+            Quick Actions
+        </h2>
+        
+        <div class="quick-actions-grid">
+            <a href="#upload" class="action-card" data-section="upload">
+                <div class="action-icon">📤</div>
+                <div class="action-label">Upload</div>
+            </a>
+            <a href="#results" class="action-card" data-section="results">
+                <div class="action-icon">📊</div>
+                <div class="action-label">Results</div>
+            </a>
+            <a href="#reports" class="action-card" data-section="reports">
+                <div class="action-icon">📄</div>
+                <div class="action-label">Reports</div>
+            </a>
+            <a href="#citations" class="action-card" data-section="citations">
+                <div class="action-icon">📚</div>
+                <div class="action-label">Citations</div>
+            </a>
+            <a href="#similarity" class="action-card" data-section="similarity">
+                <div class="action-icon">📈</div>
+                <div class="action-label">Similarity</div>
+            </a>
+            <a href="#history" class="action-card" data-section="history">
+                <div class="action-icon">🕒</div>
+                <div class="action-label">History</div>
+            </a>
+            <a href="#copyright" class="action-card" data-section="copyright">
+                <div class="action-icon">©️</div>
+                <div class="action-label">Copyright</div>
+            </a>
+            <a href="#settings" class="action-card" data-section="settings">
+                <div class="action-icon">⚙️</div>
+                <div class="action-label">Settings</div>
+            </a>
+        </div>
+
+        <!-- Dynamic Content Sections -->
+        <div class="content-sections">
+            <!-- Upload Section (Always Visible) -->
+            <section id="upload" class="content-section active">
+                <div class="upload-section">
+                    <h2 class="section-title">
+                        <span class="section-title-icon">📤</span>
+                        Upload & Analyze
+                    </h2>
+                    
+                    <div class="upload-grid">
+                        <!-- File Upload Card -->
+                        <div class="upload-card">
+                            <h3 class="upload-card-title">
+                                <span class="upload-circle">📁</span>
+                                File Upload
+                            </h3>
+                            
+                            <div class="upload-box" id="uploadBox">
+                                <label for="fileInput" class="upload-label">
+                                    <div class="upload-icon-circle">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                        </svg>
+                                    </div>
+                                    <span>Drag & drop your file</span>
+                                    <small>PDF, DOCX, TXT (Max 25MB)</small>
+                                </label>
+                                <input type="file" id="fileInput" accept=".pdf,.docx,.txt">
+                            </div>
+                            
+                            <button class="btn-circle btn-primary" id="uploadBtn">
+                                <span class="btn-icon">📤</span>
+                                Analyze Document
+                            </button>
+                        </div>
+
+                        <!-- Text Paste Card -->
+                        <div class="upload-card">
+                            <h3 class="upload-card-title">
+                                <span class="upload-circle">📝</span>
+                                Paste Text
+                            </h3>
+                            
+                            <textarea id="textInput" class="textarea-box" 
+                                placeholder="Paste your content here (minimum 50 characters)..."></textarea>
+                            
+                            <button class="btn-circle btn-secondary" id="analyzeTextBtn">
+                                <span class="btn-icon">🔍</span>
+                                Analyze Text
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="status-circle" id="status">
+                        <span class="status-icon">⏳</span>
+                        <span>Ready to analyze</span>
+                    </div>
+
+                    <!-- AI Loader -->
+                    <div class="ai-loader-circle hidden" id="aiLoader">
+                        <div class="loader-spinner"></div>
+                        <div class="loader-dots">
+                            <div class="loader-dot"></div>
+                            <div class="loader-dot"></div>
+                            <div class="loader-dot"></div>
+                        </div>
+                        <span class="loader-text">AI analyzing your content...</span>
+                    </div>
+
+                    <!-- Results Section (Initially Hidden) -->
+                    <div class="results-section hidden" id="resultsSection">
+                        <h2 class="section-title">
+                            <span class="section-title-icon">📊</span>
+                            Analysis Results
+                        </h2>
+                        
+                        <div class="results-grid">
+                            <!-- Score Circle -->
+                            <div class="score-circle-container">
+                                <div class="score-circle">
+                                    <svg class="progress-ring" width="180" height="180">
+                                        <circle class="ring-bg" cx="90" cy="90" r="80"></circle>
+                                        <circle class="ring-progress" cx="90" cy="90" r="80"></circle>
+                                    </svg>
+                                    <div class="score-text">
+                                        <div class="score-number"><span id="scoreValue">0</span><small>%</small></div>
+                                        <div class="score-label">Plagiarism Score</div>
+                                    </div>
+                                </div>
+                                <div class="verdict-badge" id="verdictText">Analyzing...</div>
+                            </div>
+
+                            <!-- Pie Chart -->
+                            <div class="pie-container">
+                                <h3 class="pie-title">
+                                    <span class="section-title-icon">🥧</span>
+                                    Similarity Breakdown
+                                </h3>
+                                <canvas id="pieChart" class="pie-chart" width="220" height="220"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Breakdown Items -->
+                        <div class="breakdown-circles">
+                            <div class="breakdown-item" id="breakdown1">
+                                <div class="breakdown-icon">🔴</div>
+                                <div class="breakdown-value" id="breakdownValue1">0</div>
+                                <div class="breakdown-label">Identical</div>
+                            </div>
+                            <div class="breakdown-item" id="breakdown2">
+                                <div class="breakdown-icon">🟠</div>
+                                <div class="breakdown-value" id="breakdownValue2">0</div>
+                                <div class="breakdown-label">Minor Changes</div>
+                            </div>
+                            <div class="breakdown-item" id="breakdown3">
+                                <div class="breakdown-icon">🔵</div>
+                                <div class="breakdown-value" id="breakdownValue3">0</div>
+                                <div class="breakdown-label">Paraphrased</div>
+                            </div>
+                            <div class="breakdown-item" id="breakdown4">
+                                <div class="breakdown-icon">🟢</div>
+                                <div class="breakdown-value" id="breakdownValue4">0</div>
+                                <div class="breakdown-label">Unique</div>
+                            </div>
+                        </div>
+
+                        <!-- Matches Container -->
+                        <div class="matches-container" id="matchesBox"></div>
+
+                        <!-- Highlights Container -->
+                        <div class="matches-container" id="highlightBox"></div>
+
+                        <!-- Download Report Button -->
+                        <button class="download-btn-circle" id="downloadBtn">
+                            <span class="download-icon">📥</span>
+                            Download Full Report
+                            <span class="download-icon">📄</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section (Dynamic) -->
+            <section id="results" class="content-section">
+                <div class="section-loader" id="results-loader">
+                    <div class="loader-spinner"></div>
+                    <p>Loading results...</p>
+                </div>
+                <div id="results-container"></div>
+            </section>
+
+            <!-- Reports Section (Dynamic) -->
+            <section id="reports" class="content-section">
+                <div class="section-loader" id="reports-loader">
+                    <div class="loader-spinner"></div>
+                    <p>Loading reports...</p>
+                </div>
+                <div id="reports-container"></div>
+            </section>
+
+            <!-- Citations Section (Dynamic) -->
+            <section id="citations" class="content-section">
+                <div class="section-loader" id="citations-loader">
+                    <div class="loader-spinner"></div>
+                    <p>Loading citations...</p>
+                </div>
+                <div id="citations-container"></div>
+            </section>
+
+            <!-- Similarity Section (Dynamic) -->
+            <section id="similarity" class="content-section">
+                <div class="section-loader" id="similarity-loader">
+                    <div class="loader-spinner"></div>
+                    <p>Loading similarity data...</p>
+                </div>
+                <div id="similarity-container"></div>
+            </section>
+
+            <!-- History Section (Dynamic) -->
+            <section id="history" class="content-section">
+                <div class="section-loader" id="history-loader">
+                    <div class="loader-spinner"></div>
+                    <p>Loading history...</p>
+                </div>
+                <div id="history-container"></div>
+            </section>
+
+            <!-- Copyright Section (Dynamic) -->
+            <section id="copyright" class="content-section">
+                <div class="section-loader" id="copyright-loader">
+                    <div class="loader-spinner"></div>
+                    <p>Loading copyright data...</p>
+                </div>
+                <div id="copyright-container"></div>
+            </section>
+
+            <!-- Settings Section (Dynamic) -->
+            <section id="settings" class="content-section">
+                <div class="section-loader" id="settings-loader">
+                    <div class="loader-spinner"></div>
+                    <p>Loading settings...</p>
+                </div>
+                <div id="settings-container"></div>
+            </section>
+        </div>
+    </div>
+
+    <!-- JavaScript files - Note the correct paths -->
+    <script src="{% static 'js/navbar.js' %}"></script>
+    <script src="{% static 'js/sections/results.js' %}"></script>
+    <script src="{% static 'js/sections/reports.js' %}"></script>
+    <script src="{% static 'js/sections/citations.js' %}"></script>
+    <script src="{% static 'js/sections/similarity.js' %}"></script>
+    <script src="{% static 'js/sections/history.js' %}"></script>
+    <script src="{% static 'js/sections/copyright.js' %}"></script>
+    <script src="{% static 'js/sections/settings.js' %}"></script>
+    <script src="{% static 'js/unified.js' %}"></script>
+    
+    <script>
+        // Set current date
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateElement = document.getElementById('current-date');
+            if (dateElement) {
+                const now = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                dateElement.textContent = now.toLocaleDateString('en-US', options);
+            }
+        });
+    </script>
+</body>
+</html>

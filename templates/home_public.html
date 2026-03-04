@@ -1,170 +1,655 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>BRI AI Plagiarism Detection</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
   <link rel="stylesheet" href="{% static 'css/home-ai.css' %}">
 </head>
 <body>
+  <!-- Particles Background -->
+  <div class="particles"></div>
 
-<!-- ================= NAVBAR ================= -->
-<nav class="navbar">
-  <div class="brand">BRI AI</div>
+  <!-- ================= NAVBAR ================= -->
+  <nav class="navbar">
+    <div class="brand">
+      <span class="brand-icon">🤖</span>
+      BRI AI
+    </div>
 
-  <ul class="nav-links">
-    <li><a href="#hero">Home</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a class="btn-primary" href="/login/">Get Started</a></li>
-  </ul>
-</nav>
+    <ul class="nav-links">
+      <li><a href="#hero" class="nav-link">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#features" class="nav-link">Features</a></li>
+      <li><a href="#pricing" class="nav-link">Pricing</a></li>
+      <li><a class="btn-primary" href="/login/">Get Started →</a></li>
+    </ul>
+  </nav>
 
-<div class="layout">
+  <div class="layout">
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <a href="#hero" class="side-item">🏠 Overview</a>
+      <a href="#what" class="side-item">📘 What is Plagiarism?</a>
+      <a href="#how" class="side-item">🧠 How AI Works</a>
+      <a href="#features" class="side-item">✨ Features</a>
+      <a href="#students" class="side-item">🎓 Students</a>
+      <a href="#professionals" class="side-item">💼 Professionals</a>
+      <a href="#researchers" class="side-item">🔬 Researchers</a>
+      <a href="#video" class="side-item">🎥 Demo</a>
+      <a href="#faq" class="side-item">❓ FAQ</a>
+    </aside>
 
-  <!-- ================= SIDEBAR ================= -->
-  <aside class="sidebar">
-    <a href="#hero">🏠 Overview</a>
-    <a href="#what">📘 What is Plagiarism?</a>
-    <a href="#how">🧠 How AI Works</a>
-    <a href="#features">✨ Features</a>
-    <a href="#students">🎓 Students</a>
-    <a href="#professionals">💼 Professionals</a>
-    <a href="#researchers">🔬 Researchers</a>
-    <a href="#video">🎥 Demo</a>
-    <a href="#faq">❓ FAQ</a>
-  </aside>
-
-  <!-- ================= MAIN ================= -->
-  <main class="main">
-
-    <!-- HERO -->
-    <section id="hero" class="hero">
-      <h1>AI-Powered Plagiarism Detection</h1>
-      <p>
-        Upload documents or paste text to check originality instantly.
-        Smart analysis. Clear reports. Easy understanding.
-      </p>
-      <a href="/login/" class="hero-btn">Start Checking Now</a>
-    </section>
-
-    <!-- WHAT IS PLAGIARISM -->
-    <section id="what" class="split">
-      <div class="text">
-        <h2>What is Plagiarism?</h2>
-        <p>
-          Plagiarism means copying someone else's work without giving credit.
-          This includes copy-paste, small word changes, or rewriting ideas.
-        </p>
-        <p>
-          Even if words are changed slightly, the meaning can still be the same.
-          Our AI detects these similarities.
-        </p>
-      </div>
-      <div class="image">
-        <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da" alt="Plagiarism concept">
-      </div>
-    </section>
-
-    <!-- HOW AI WORKS -->
-    <section id="how" class="center-section">
-      <h2>How AI Detects Plagiarism</h2>
-      <div class="steps">
-        <div class="step">1️⃣ Reads the text</div>
-        <div class="step">2️⃣ Cleans unnecessary words</div>
-        <div class="step">3️⃣ Breaks into sentences</div>
-        <div class="step">4️⃣ Compares with database</div>
-        <div class="step">5️⃣ Calculates similarity score</div>
-        <div class="step">6️⃣ Shows visual report</div>
-      </div>
-      <p class="small-note">
-        NLP (Natural Language Processing) helps the system understand text like humans do.
-      </p>
-    </section>
-
-    <!-- FEATURES -->
-    <section id="features" class="feature-section">
-      <h2>Powerful Features</h2>
-
-      <div class="feature-grid">
-        <div class="feature-card">
-          <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b">
-          <h3>Multi Format Support</h3>
-          <p>Upload PDF, DOCX or paste text directly.</p>
+    <!-- ================= MAIN ================= -->
+    <main class="main">
+      <!-- HERO -->
+      <section id="hero" class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">🚀 AI-Powered</span>
+          <h1>Advanced Plagiarism Detection with AI</h1>
+          <p class="hero-description">
+            Upload documents or paste text to check originality instantly. 
+            Our AI analyzes your content with 99.9% accuracy.
+          </p>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-number">10M+</span>
+              <span class="stat-label">Documents Checked</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">99.9%</span>
+              <span class="stat-label">Accuracy</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">50+</span>
+              <span class="stat-label">Languages</span>
+            </div>
+          </div>
+          <a href="/login/" class="hero-btn">
+            Start Checking Now
+            <span class="btn-arrow">→</span>
+          </a>
         </div>
-
-        <div class="feature-card">
-          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71">
-          <h3>Visual Reports</h3>
-          <p>Pie charts and clear plagiarism percentage.</p>
+        <div class="hero-image">
+          <div class="floating-card card-1">
+            <span class="card-icon">📊</span>
+            <span>98% Original</span>
+          </div>
+          <div class="floating-card card-2">
+            <span class="card-icon">🔍</span>
+            <span>AI Analysis</span>
+          </div>
+          <div class="floating-card card-3">
+            <span class="card-icon">✅</span>
+            <span>Clean Report</span>
+          </div>
         </div>
+      </section>
 
-        <div class="feature-card">
-          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475">
-          <h3>Smart AI Matching</h3>
-          <p>Detects identical, minor and paraphrased content.</p>
+      <!-- WHAT IS PLAGIARISM -->
+      <section id="what" class="split">
+        <div class="text" data-aos="fade-right">
+          <h2>What is Plagiarism?</h2>
+          <p class="section-description">
+            Plagiarism is the act of using someone else's work without proper attribution. 
+            It includes:
+          </p>
+          <ul class="feature-list">
+            <li>📝 Copy-pasting text without quotes</li>
+            <li>🔄 Paraphrasing without citation</li>
+            <li>🎨 Using images without permission</li>
+            <li>💡 Stealing ideas or concepts</li>
+          </ul>
+          <div class="stats-mini">
+            <div class="stat-mini">
+              <span class="stat-mini-number">80%</span>
+              <span>of students admit to plagiarism</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+        <div class="image" data-aos="fade-left">
+          <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600" alt="Plagiarism concept">
+          <div class="image-overlay"></div>
+        </div>
+      </section>
 
-    <!-- STUDENTS -->
-    <section id="students" class="split">
-      <div class="text">
-        <h2>For Students</h2>
-        <p>Check assignments before submission and avoid accidental plagiarism.</p>
-      </div>
-      <div class="image">
-        <img src="https://images.unsplash.com/photo-1584697964358-3e14ca57658b">
-      </div>
-    </section>
+      <!-- HOW AI WORKS -->
+      <section id="how" class="center-section">
+        <h2>How Our AI Detects Plagiarism</h2>
+        <p class="section-description">Advanced neural networks analyze your text in 6 steps</p>
+        
+        <div class="steps-container">
+          <div class="step-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="step-number">1</div>
+            <div class="step-icon">📖</div>
+            <h3>Reads Text</h3>
+            <p>Extracts and normalizes content</p>
+          </div>
+          <div class="step-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="step-number">2</div>
+            <div class="step-icon">🧹</div>
+            <h3>Cleans Data</h3>
+            <p>Removes stop words and noise</p>
+          </div>
+          <div class="step-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="step-number">3</div>
+            <div class="step-icon">🔪</div>
+            <h3>Tokenizes</h3>
+            <p>Breaks into sentences & n-grams</p>
+          </div>
+          <div class="step-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="step-number">4</div>
+            <div class="step-icon">🔎</div>
+            <h3>Compares</h3>
+            <p>Matches against database</p>
+          </div>
+          <div class="step-card" data-aos="fade-up" data-aos-delay="500">
+            <div class="step-number">5</div>
+            <div class="step-icon">📊</div>
+            <h3>Calculates</h3>
+            <p>Generates similarity score</p>
+          </div>
+          <div class="step-card" data-aos="fade-up" data-aos-delay="600">
+            <div class="step-number">6</div>
+            <div class="step-icon">📈</div>
+            <h3>Visualizes</h3>
+            <p>Creates interactive report</p>
+          </div>
+        </div>
+      </section>
 
-    <!-- PROFESSIONALS -->
-    <section id="professionals" class="split reverse">
-      <div class="text">
-        <h2>For Professionals</h2>
-        <p>Ensure blogs, marketing content, and reports are original.</p>
-      </div>
-      <div class="image">
-        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d">
-      </div>
-    </section>
+      <!-- FEATURES -->
+      <section id="features" class="feature-section">
+        <h2>Powerful Features</h2>
+        <p class="section-description">Everything you need to ensure content originality</p>
 
-    <!-- RESEARCHERS -->
-    <section id="researchers" class="split">
-      <div class="text">
-        <h2>For Researchers</h2>
-        <p>Validate originality of research papers and theses.</p>
-      </div>
-      <div class="image">
-        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d">
-      </div>
-    </section>
+        <div class="feature-grid">
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
+            <div class="feature-icon">📁</div>
+            <h3>Multi Format Support</h3>
+            <p>Upload PDF, DOCX, TXT or paste text directly</p>
+            <div class="feature-badge">Popular</div>
+          </div>
 
-    <!-- VIDEO -->
-    <section id="video" class="center-section">
-      <h2>See How It Works</h2>
-      <iframe width="560" height="315"
-        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-        frameborder="0"
-        allowfullscreen>
-      </iframe>
-    </section>
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
+            <div class="feature-icon">📊</div>
+            <h3>Visual Reports</h3>
+            <p>Interactive charts and detailed breakdowns</p>
+            <div class="feature-badge">New</div>
+          </div>
 
-    <!-- FAQ -->
-    <section id="faq" class="faq">
-      <h2>Frequently Asked Questions</h2>
-      <p><strong>Is my data saved?</strong> No, your content is secure.</p>
-      <p><strong>Is this free?</strong> Local checking is free.</p>
-      <p><strong>Does it check internet?</strong> Global version coming soon.</p>
-    </section>
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
+            <div class="feature-icon">🧠</div>
+            <h3>Smart AI Matching</h3>
+            <p>Detects paraphrased and translated content</p>
+            <div class="feature-badge">AI</div>
+          </div>
 
-    <footer class="footer">
-      <p>© 2026 BRI AI Plagiarism Detection</p>
-    </footer>
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="400">
+            <div class="feature-icon">⚡</div>
+            <h3>Real-time Analysis</h3>
+            <p>Get results in seconds, not minutes</p>
+          </div>
 
-  </main>
-</div>
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="500">
+            <div class="feature-icon">🔒</div>
+            <h3>Secure & Private</h3>
+            <p>Your documents are encrypted and never shared</p>
+          </div>
 
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="600">
+            <div class="feature-icon">🌐</div>
+            <h3>Multi-language</h3>
+            <p>Supports 50+ languages</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STUDENTS -->
+      <section id="students" class="split">
+        <div class="text" data-aos="fade-right">
+          <h2>For Students</h2>
+          <p class="section-description">
+            Ensure your assignments are original before submission. Our tool helps you:
+          </p>
+          <ul class="feature-list">
+            <li>✅ Check for accidental plagiarism</li>
+            <li>📚 Learn proper citation practices</li>
+            <li>📈 Improve your writing skills</li>
+            <li>🎯 Get higher grades</li>
+          </ul>
+          <a href="/student/dashboard/" class="cta-link">Try Student Dashboard →</a>
+        </div>
+        <div class="image" data-aos="fade-left">
+          <img src="https://images.unsplash.com/photo-1584697964358-3e14ca57658b?w=600" alt="Student">
+        </div>
+      </section>
+
+      <!-- PROFESSIONALS -->
+      <section id="professionals" class="split reverse">
+        <div class="text" data-aos="fade-left">
+          <h2>For Professionals</h2>
+          <p class="section-description">
+            Protect your brand with original content:
+          </p>
+          <ul class="feature-list">
+            <li>✅ Check blog posts and articles</li>
+            <li>📊 Marketing content validation</li>
+            <li>©️ Copyright protection</li>
+            <li>📈 SEO-friendly content</li>
+          </ul>
+          <a href="/professional/dashboard/" class="cta-link">Try Professional Dashboard →</a>
+        </div>
+        <div class="image" data-aos="fade-right">
+          <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600" alt="Professional">
+        </div>
+      </section>
+
+      <!-- RESEARCHERS -->
+      <section id="researchers" class="split">
+        <div class="text" data-aos="fade-right">
+          <h2>For Researchers</h2>
+          <p class="section-description">
+            Maintain academic integrity with advanced tools:
+          </p>
+          <ul class="feature-list">
+            <li>✅ Validate research papers</li>
+            <li>📚 Citation analysis</li>
+            <li>🔬 Peer review assistance</li>
+            <li>📊 Publication readiness</li>
+          </ul>
+          <a href="/researcher/dashboard/" class="cta-link">Try Researcher Dashboard →</a>
+        </div>
+        <div class="image" data-aos="fade-left">
+          <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600" alt="Researcher">
+        </div>
+      </section>
+
+      <!-- VIDEO -->
+      <section id="video" class="center-section">
+        <h2>See How It Works</h2>
+        <p class="section-description">Watch our 2-minute demo</p>
+        <div class="video-container">
+          <iframe width="100%" height="500" 
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            frameborder="0"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" class="faq">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+          <div class="faq-item" data-aos="fade-up">
+            <h4>Is my data saved?</h4>
+            <p>No, your documents are automatically deleted after analysis. We prioritize your privacy.</p>
+          </div>
+          <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
+            <h4>Is this free?</h4>
+            <p>Basic checks are free. Premium features require a subscription.</p>
+          </div>
+          <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+            <h4>Does it check the internet?</h4>
+            <p>Yes, we check against billions of web pages and academic databases.</p>
+          </div>
+          <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+            <h4>How accurate is it?</h4>
+            <p>Our AI achieves 99.9% accuracy with advanced deep learning models.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <div class="cta-content">
+          <h2>Ready to check your content?</h2>
+          <p>Join millions of users who trust BRI AI for plagiarism detection</p>
+          <a href="/signup/" class="cta-button">
+            Get Started Free
+            <span class="btn-arrow">→</span>
+          </a>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="brand-icon">🤖</span>
+            BRI AI
+          </div>
+          <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+            <a href="#">Blog</a>
+          </div>
+          <p>© 2026 BRI AI Plagiarism Detection. All rights reserved.</p>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- AOS Library for scroll animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 800,
+      once: true
+    });
+
+    // Particle background
+    function createParticles() {
+      const container = document.createElement('div');
+      container.className = 'particles';
+      document.body.appendChild(container);
+
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = 15 + Math.random() * 10 + 's';
+        particle.style.width = 2 + Math.random() * 8 + 'px';
+        particle.style.height = particle.style.width;
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+  </script>
+
+  <style>
+    /* Additional styles for home page */
+    .hero-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .hero-description {
+      font-size: 1.2rem;
+      color: #e5e7eb;
+      max-width: 600px;
+      margin: 20px 0;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin: 40px 0;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      display: block;
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+    }
+
+    .hero-image {
+      position: relative;
+    }
+
+    .floating-card {
+      position: absolute;
+      background: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .card-1 {
+      top: 20%;
+      left: -50px;
+      animation-delay: 0s;
+    }
+
+    .card-2 {
+      top: 50%;
+      right: -50px;
+      animation-delay: 0.5s;
+    }
+
+    .card-3 {
+      bottom: 20%;
+      left: -30px;
+      animation-delay: 1s;
+    }
+
+    .card-icon {
+      font-size: 1.5rem;
+    }
+
+    .steps-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .step-card {
+      background: white;
+      padding: 30px 20px;
+      border-radius: 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+    }
+
+    .step-number {
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .step-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .feature-list li {
+      padding: 10px 0;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .stats-mini {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 16px;
+      margin-top: 20px;
+    }
+
+    .stat-mini {
+      text-align: center;
+    }
+
+    .stat-mini-number {
+      display: block;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .cta-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .cta-link:hover {
+      border-bottom-color: var(--primary);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .faq-item {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .faq-item h4 {
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .faq-item p {
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .cta-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 30px;
+      padding: 60px 40px;
+      text-align: center;
+      color: white;
+      margin: 60px 0;
+    }
+
+    .cta-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .cta-content p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: white;
+      color: var(--primary);
+      padding: 15px 40px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer-content {
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .footer-brand {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+
+    .footer-links a {
+      color: #6b7280;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @media (max-width: 768px) {
+      .hero-stats {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .floating-card {
+        display: none;
+      }
+      
+      .steps-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .cta-section {
+        padding: 40px 20px;
+      }
+      
+      .cta-content h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </body>
 </html>

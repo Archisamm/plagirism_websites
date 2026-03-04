@@ -36,15 +36,9 @@ class UserManager(BaseUserManager):
 
 
 # ==========================================
-# USER MODEL
+# USER MODEL (Simplified - No Role)
 # ==========================================
 class User(AbstractUser):
-
-    ROLE_CHOICES = (
-        ("student", "Student"),
-        ("professional", "Professional"),
-        ("researcher", "Researcher"),
-    )
 
     # login fields
     email = models.EmailField(unique=True)
@@ -52,8 +46,7 @@ class User(AbstractUser):
     # keep username internally (required by AbstractUser)
     username = models.CharField(max_length=150, blank=True, null=True)
 
-    # profile
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, blank=True, null=True)
+    # profile (optional fields - no role required)
     display_name = models.CharField(max_length=100, blank=True)
     institution = models.CharField(max_length=150, blank=True)
     bio = models.TextField(blank=True)

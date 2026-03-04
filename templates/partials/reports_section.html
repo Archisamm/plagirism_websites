@@ -1,0 +1,39 @@
+{% load static %}
+<div class="section-content" id="reports-content">
+    <h2 class="section-title">
+        <span class="section-title-icon">📄</span>
+        Generated Reports
+    </h2>
+
+    {% if reports %}
+        <div class="reports-grid">
+            {% for report in reports %}
+            <div class="report-card" data-report-id="{{ report.id }}">
+                <div class="report-icon">📄</div>
+                <div class="report-info">
+                    <h4 class="report-title">{{ report.title }}</h4>
+                    <span class="report-date">{{ report.created_at|date:"M d, Y" }}</span>
+                    <span class="report-score">{{ report.score }}% Plagiarism</span>
+                </div>
+                <div class="report-actions">
+                    <button class="btn-icon-only view-pdf" title="View PDF" data-report-id="{{ report.id }}">
+                        👁️
+                    </button>
+                    <button class="btn-icon-only download-pdf" title="Download PDF" data-report-id="{{ report.id }}">
+                        📥
+                    </button>
+                    <button class="btn-icon-only share-report" title="Share" data-report-id="{{ report.id }}">
+                        🔗
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📄</div>
+            <h3>No Reports Generated</h3>
+            <p>Your analysis reports will appear here once you've checked documents.</p>
+        </div>
+    {% endif %}
+</div>

@@ -203,7 +203,7 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
-
+LOGIN_URL ='/login/'
 LOGIN_REDIRECT_URL = "/after-login/"
 LOGOUT_REDIRECT_URL = "/"
 

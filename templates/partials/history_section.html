@@ -1,0 +1,52 @@
+{% load static %}
+<div class="section-content" id="history-content">
+    <h2 class="section-title">
+        <span class="section-title-icon">🕒</span>
+        Analysis History
+    </h2>
+
+    {% if history %}
+        <div class="history-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="documents">Documents</button>
+            <button class="filter-btn" data-filter="text">Text</button>
+            <button class="filter-btn" data-filter="recent">Last 7 Days</button>
+        </div>
+
+        <div class="history-list">
+            {% for item in history %}
+            <div class="history-item" data-type="{{ item.type }}" data-date="{{ item.date|date:'Y-m-d' }}">
+                <div class="history-icon">
+                    {% if item.type == 'document' %}📄{% else %}📝{% endif %}
+                </div>
+                <div class="history-details">
+                    <div class="history-header">
+                        <h4>{{ item.title }}</h4>
+                        <span class="history-time">{{ item.date|timesince }} ago</span>
+                    </div>
+                    <div class="history-meta">
+                        <span class="history-score">{{ item.score }}% Match</span>
+                        <span class="history-verdict {% if item.score < 15 %}success{% elif item.score < 30 %}warning{% else %}danger{% endif %}">
+                            {{ item.verdict }}
+                        </span>
+                    </div>
+                </div>
+                <div class="history-actions">
+                    <button class="btn-icon-only" title="View" data-id="{{ item.id }}">
+                        👁️
+                    </button>
+                    <button class="btn-icon-only" title="Download Report" data-id="{{ item.id }}">
+                        📥
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🕒</div>
+            <h3>No History Yet</h3>
+            <p>Your analysis history will appear here.</p>
+        </div>
+    {% endif %}
+</div>

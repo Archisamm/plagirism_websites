@@ -1,0 +1,63 @@
+{% load static %}
+<div class="section-content" id="copyright-content">
+    <h2 class="section-title">
+        <span class="section-title-icon">©️</span>
+        Copyright Protection
+    </h2>
+
+    {% if copyright_data %}
+        <div class="copyright-summary">
+            <div class="risk-meter">
+                <div class="risk-circle {% if copyright_data.risk_level == 'low' %}success{% elif copyright_data.risk_level == 'medium' %}warning{% else %}danger{% endif %}">
+                    <span class="risk-value">{{ copyright_data.risk_percentage }}%</span>
+                </div>
+                <div class="risk-info">
+                    <h4>Copyright Risk Level</h4>
+                    <p class="risk-level">{{ copyright_data.risk_level|title }} Risk</p>
+                </div>
+            </div>
+
+            <div class="copyright-stats">
+                <div class="stat-box">
+                    <span class="stat-number">{{ copyright_data.checked_documents }}</span>
+                    <span class="stat-label">Documents Checked</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">{{ copyright_data.flagged }}</span>
+                    <span class="stat-label">Flagged Content</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">{{ copyright_protected }}</span>
+                    <span class="stat-label">Protected</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flagged-content">
+            <h3>Flagged Content</h3>
+            {% for item in copyright_data.flagged_items %}
+            <div class="flagged-item">
+                <div class="flagged-header">
+                    <span class="flagged-title">{{ item.title }}</span>
+                    <span class="flagged-risk">{{ item.risk }}% Risk</span>
+                </div>
+                <p class="flagged-excerpt">{{ item.excerpt }}</p>
+                <div class="flagged-sources">
+                    <strong>Potential Sources:</strong>
+                    <ul>
+                        {% for source in item.sources %}
+                        <li><a href="{{ source.url }}" target="_blank">{{ source.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">©️</div>
+            <h3>No Copyright Issues Detected</h3>
+            <p>Your content appears to be original.</p>
+        </div>
+    {% endif %}
+</div>

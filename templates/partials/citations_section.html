@@ -1,0 +1,63 @@
+ {% load static %}
+<div class="section-content" id="citations-content">
+    <h2 class="section-title">
+        <span class="section-title-icon">📚</span>
+        Citation Analysis
+    </h2>
+
+    {% if citations %}
+        <div class="citations-summary">
+            <div class="summary-card">
+                <div class="summary-icon">📊</div>
+                <div class="summary-info">
+                    <span class="summary-value">{{ citations.total }}</span>
+                    <span class="summary-label">Total Citations</span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">✅</div>
+                <div class="summary-info">
+                    <span class="summary-value">{{ citations.correct }}</span>
+                    <span class="summary-label">Correct Format</span>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">⚠️</div>
+                <div class="summary-info">
+                    <span class="summary-value">{{ citations.needs_review }}</span>
+                    <span class="summary-label">Needs Review</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="citations-list">
+            {% for citation in citations.list %}
+            <div class="citation-card {% if not citation.correct %}needs-review{% endif %}">
+                <div class="citation-status">
+                    {% if citation.correct %}
+                    <span class="status-badge success">✅ Correct</span>
+                    {% else %}
+                    <span class="status-badge warning">⚠️ Needs Review</span>
+                    {% endif %}
+                </div>
+                <div class="citation-text">{{ citation.text }}</div>
+                <div class="citation-meta">
+                    <span class="citation-format">{{ citation.format }}</span>
+                    <span class="citation-location">Page {{ citation.page }}</span>
+                </div>
+                {% if not citation.correct %}
+                <div class="citation-suggestion">
+                    <strong>Suggestion:</strong> {{ citation.suggestion }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <h3>No Citations Found</h3>
+            <p>Citations from your analyzed documents will appear here.</p>
+        </div>
+    {% endif %}
+</div>
