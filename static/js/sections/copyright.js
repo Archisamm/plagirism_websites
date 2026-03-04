@@ -1,7 +1,19 @@
 class CopyrightSection {
     constructor() {
+        if (window.copyrightSectionInstance) {
+            return window.copyrightSectionInstance;
+        }
+        
+        console.log('CopyrightSection initializing...');
         this.container = document.getElementById('copyright-container');
         this.loader = document.getElementById('copyright-loader');
+        
+        if (!this.container) {
+            console.warn('Copyright container not found');
+            return;
+        }
+        
+        window.copyrightSectionInstance = this;
         this.init();
     }
 
@@ -11,8 +23,8 @@ class CopyrightSection {
 
     async loadCopyrightData() {
         this.showLoader();
+        
         try {
-            // Mock data
             const mockData = {
                 risk_level: 'low',
                 risk_percentage: 15,
@@ -46,7 +58,7 @@ class CopyrightSection {
             setTimeout(() => {
                 this.renderCopyrightData(mockData);
                 this.hideLoader();
-            }, 800);
+            }, 1000);
             
         } catch (error) {
             console.error('Error loading copyright data:', error);
@@ -59,16 +71,17 @@ class CopyrightSection {
         if (!this.container) return;
         
         const riskClass = data.risk_level === 'low' ? 'success' : (data.risk_level === 'medium' ? 'warning' : 'danger');
+        const riskLevelText = data.risk_level.charAt(0).toUpperCase() + data.risk_level.slice(1);
         
         let html = `
             <div class="copyright-summary">
                 <div class="risk-meter">
                     <div class="risk-circle ${riskClass}">
-                        <span class="risk-value">${data.risk_percentage}%</span>
+                        ${data.risk_percentage}%
                     </div>
                     <div class="risk-info">
                         <h4>Copyright Risk Level</h4>
-                        <p class="risk-level ${riskClass}">${data.risk_level.charAt(0).toUpperCase() + data.risk_level.slice(1)} Risk</p>
+                        <p class="risk-level ${riskClass}">${riskLevelText} Risk</p>
                     </div>
                 </div>
 
@@ -89,7 +102,10 @@ class CopyrightSection {
             </div>
 
             <div class="flagged-content">
-                <h3>Flagged Content</h3>
+                <h3 class="section-title" style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <span class="section-title-icon" style="width: 32px; height: 32px; font-size: 1rem;">⚠️</span>
+                    Flagged Content
+                </h3>
         `;
         
         data.flagged_items.forEach(item => {
@@ -122,25 +138,23 @@ class CopyrightSection {
 
     showLoader() {
         if (this.loader) {
-            this.loader.style.display = 'flex';
+            this.loader.classList.remove('hidden');
         }
         if (this.container) {
-            this.container.style.display = 'none';
+            this.container.classList.add('hidden');
         }
     }
 
     hideLoader() {
         if (this.loader) {
-            this.loader.style.display = 'none';
+            this.loader.classList.add('hidden');
         }
         if (this.container) {
-            this.container.style.display = 'block';
+            this.container.classList.remove('hidden');
         }
     }
 
     renderEmpty() {
-        if (!this.container) return;
-        
         this.container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-icon">©️</div>
@@ -151,14 +165,12 @@ class CopyrightSection {
     }
 
     renderError() {
-        if (!this.container) return;
-        
         this.container.innerHTML = `
             <div class="error-state">
                 <div class="error-icon">❌</div>
                 <h3>Error Loading Copyright Data</h3>
                 <p>Please try again later.</p>
-                <button class="btn-primary" onclick="window.location.reload()" style="padding: 12px 30px; border: none; cursor: pointer;">Retry</button>
+                <button class="btn-small btn-primary" onclick="window.location.reload()">Retry</button>
             </div>
         `;
     }
@@ -172,6 +184,10 @@ class CopyrightSection {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    window.copyrightSection = new CopyrightSection();
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        new CopyrightSection();
+    });
+} else {
+    new CopyrightSection();
+}

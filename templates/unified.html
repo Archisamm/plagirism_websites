@@ -2,26 +2,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>BRI AI - Unified Plagiarism Detection Platform</title>
+    <title>BRI AI - Plagiarism Detection Platform</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/unified.css' %}">
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
 </head>
 <body>
-    <!-- Particle Background -->
+    <!-- Particles Background -->
     <div class="particles" id="particles"></div>
 
     <!-- Navigation -->
     <nav id="navbar"></nav>
 
-    <!-- Main Unified Container -->
+    <!-- Main Container -->
     <div class="unified-container">
         
-        <!-- Header Section -->
+        <!-- Header -->
         <div class="header">
             <h1 class="main-title">
                 <span class="main-title-icon">✨</span>
@@ -106,7 +104,7 @@
 
         <!-- Dynamic Content Sections -->
         <div class="content-sections">
-            <!-- Upload Section (Always Visible) -->
+            <!-- Upload Section -->
             <section id="upload" class="content-section active">
                 <div class="upload-section">
                     <h2 class="section-title">
@@ -115,7 +113,7 @@
                     </h2>
                     
                     <div class="upload-grid">
-                        <!-- File Upload Card -->
+                        <!-- File Upload -->
                         <div class="upload-card">
                             <h3 class="upload-card-title">
                                 <span class="upload-circle">📁</span>
@@ -124,11 +122,7 @@
                             
                             <div class="upload-box" id="uploadBox">
                                 <label for="fileInput" class="upload-label">
-                                    <div class="upload-icon-circle">
-                                        <svg viewBox="0 0 24 24">
-                                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                                        </svg>
-                                    </div>
+                                    <div class="upload-icon-circle">📤</div>
                                     <span>Drag & drop your file</span>
                                     <small>PDF, DOCX, TXT (Max 25MB)</small>
                                 </label>
@@ -136,12 +130,11 @@
                             </div>
                             
                             <button class="btn-circle btn-primary" id="uploadBtn">
-                                <span class="btn-icon">📤</span>
-                                Analyze Document
+                                <span>📤</span> Analyze Document
                             </button>
                         </div>
 
-                        <!-- Text Paste Card -->
+                        <!-- Text Paste -->
                         <div class="upload-card">
                             <h3 class="upload-card-title">
                                 <span class="upload-circle">📝</span>
@@ -152,8 +145,7 @@
                                 placeholder="Paste your content here (minimum 50 characters)..."></textarea>
                             
                             <button class="btn-circle btn-secondary" id="analyzeTextBtn">
-                                <span class="btn-icon">🔍</span>
-                                Analyze Text
+                                <span>🔍</span> Analyze Text
                             </button>
                         </div>
                     </div>
@@ -166,7 +158,6 @@
 
                     <!-- AI Loader -->
                     <div class="ai-loader-circle hidden" id="aiLoader">
-                        <div class="loader-spinner"></div>
                         <div class="loader-dots">
                             <div class="loader-dot"></div>
                             <div class="loader-dot"></div>
@@ -174,81 +165,10 @@
                         </div>
                         <span class="loader-text">AI analyzing your content...</span>
                     </div>
-
-                    <!-- Results Section (Initially Hidden) -->
-                    <div class="results-section hidden" id="resultsSection">
-                        <h2 class="section-title">
-                            <span class="section-title-icon">📊</span>
-                            Analysis Results
-                        </h2>
-                        
-                        <div class="results-grid">
-                            <!-- Score Circle -->
-                            <div class="score-circle-container">
-                                <div class="score-circle">
-                                    <svg class="progress-ring" width="180" height="180">
-                                        <circle class="ring-bg" cx="90" cy="90" r="80"></circle>
-                                        <circle class="ring-progress" cx="90" cy="90" r="80"></circle>
-                                    </svg>
-                                    <div class="score-text">
-                                        <div class="score-number"><span id="scoreValue">0</span><small>%</small></div>
-                                        <div class="score-label">Plagiarism Score</div>
-                                    </div>
-                                </div>
-                                <div class="verdict-badge" id="verdictText">Analyzing...</div>
-                            </div>
-
-                            <!-- Pie Chart -->
-                            <div class="pie-container">
-                                <h3 class="pie-title">
-                                    <span class="section-title-icon">🥧</span>
-                                    Similarity Breakdown
-                                </h3>
-                                <canvas id="pieChart" class="pie-chart" width="220" height="220"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Breakdown Items -->
-                        <div class="breakdown-circles">
-                            <div class="breakdown-item" id="breakdown1">
-                                <div class="breakdown-icon">🔴</div>
-                                <div class="breakdown-value" id="breakdownValue1">0</div>
-                                <div class="breakdown-label">Identical</div>
-                            </div>
-                            <div class="breakdown-item" id="breakdown2">
-                                <div class="breakdown-icon">🟠</div>
-                                <div class="breakdown-value" id="breakdownValue2">0</div>
-                                <div class="breakdown-label">Minor Changes</div>
-                            </div>
-                            <div class="breakdown-item" id="breakdown3">
-                                <div class="breakdown-icon">🔵</div>
-                                <div class="breakdown-value" id="breakdownValue3">0</div>
-                                <div class="breakdown-label">Paraphrased</div>
-                            </div>
-                            <div class="breakdown-item" id="breakdown4">
-                                <div class="breakdown-icon">🟢</div>
-                                <div class="breakdown-value" id="breakdownValue4">0</div>
-                                <div class="breakdown-label">Unique</div>
-                            </div>
-                        </div>
-
-                        <!-- Matches Container -->
-                        <div class="matches-container" id="matchesBox"></div>
-
-                        <!-- Highlights Container -->
-                        <div class="matches-container" id="highlightBox"></div>
-
-                        <!-- Download Report Button -->
-                        <button class="download-btn-circle" id="downloadBtn">
-                            <span class="download-icon">📥</span>
-                            Download Full Report
-                            <span class="download-icon">📄</span>
-                        </button>
-                    </div>
                 </div>
             </section>
 
-            <!-- Results Section (Dynamic) -->
+            <!-- Results Section -->
             <section id="results" class="content-section">
                 <div class="section-loader" id="results-loader">
                     <div class="loader-spinner"></div>
@@ -257,7 +177,7 @@
                 <div id="results-container"></div>
             </section>
 
-            <!-- Reports Section (Dynamic) -->
+            <!-- Reports Section -->
             <section id="reports" class="content-section">
                 <div class="section-loader" id="reports-loader">
                     <div class="loader-spinner"></div>
@@ -266,7 +186,7 @@
                 <div id="reports-container"></div>
             </section>
 
-            <!-- Citations Section (Dynamic) -->
+            <!-- Citations Section -->
             <section id="citations" class="content-section">
                 <div class="section-loader" id="citations-loader">
                     <div class="loader-spinner"></div>
@@ -275,7 +195,7 @@
                 <div id="citations-container"></div>
             </section>
 
-            <!-- Similarity Section (Dynamic) -->
+            <!-- Similarity Section -->
             <section id="similarity" class="content-section">
                 <div class="section-loader" id="similarity-loader">
                     <div class="loader-spinner"></div>
@@ -284,7 +204,7 @@
                 <div id="similarity-container"></div>
             </section>
 
-            <!-- History Section (Dynamic) -->
+            <!-- History Section -->
             <section id="history" class="content-section">
                 <div class="section-loader" id="history-loader">
                     <div class="loader-spinner"></div>
@@ -293,7 +213,7 @@
                 <div id="history-container"></div>
             </section>
 
-            <!-- Copyright Section (Dynamic) -->
+            <!-- Copyright Section -->
             <section id="copyright" class="content-section">
                 <div class="section-loader" id="copyright-loader">
                     <div class="loader-spinner"></div>
@@ -302,7 +222,7 @@
                 <div id="copyright-container"></div>
             </section>
 
-            <!-- Settings Section (Dynamic) -->
+            <!-- Settings Section -->
             <section id="settings" class="content-section">
                 <div class="section-loader" id="settings-loader">
                     <div class="loader-spinner"></div>
@@ -313,7 +233,7 @@
         </div>
     </div>
 
-    <!-- JavaScript files - Note the correct paths -->
+    <!-- JavaScript -->
     <script src="{% static 'js/navbar.js' %}"></script>
     <script src="{% static 'js/sections/results.js' %}"></script>
     <script src="{% static 'js/sections/reports.js' %}"></script>
@@ -330,8 +250,12 @@
             const dateElement = document.getElementById('current-date');
             if (dateElement) {
                 const now = new Date();
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                dateElement.textContent = now.toLocaleDateString('en-US', options);
+                dateElement.textContent = now.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
             }
         });
     </script>

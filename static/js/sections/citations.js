@@ -1,30 +1,30 @@
 class CitationsSection {
     constructor() {
+        if (window.citationsSectionInstance) {
+            return window.citationsSectionInstance;
+        }
+        
         console.log('CitationsSection initializing...');
         this.container = document.getElementById('citations-container');
         this.loader = document.getElementById('citations-loader');
         
         if (!this.container) {
-            console.error('Citations container not found! Check ID: citations-container');
-        }
-        if (!this.loader) {
-            console.error('Citations loader not found! Check ID: citations-loader');
+            console.warn('Citations container not found');
+            return;
         }
         
+        window.citationsSectionInstance = this;
         this.init();
     }
 
     async init() {
-        console.log('CitationsSection init started');
         await this.loadCitations();
     }
 
     async loadCitations() {
-        console.log('Loading citations...');
         this.showLoader();
         
         try {
-            // Mock data
             const mockData = {
                 total: 24,
                 correct: 18,
@@ -64,7 +64,6 @@ class CitationsSection {
             };
             
             setTimeout(() => {
-                console.log('Rendering citations with mock data');
                 this.renderCitations(mockData);
                 this.hideLoader();
             }, 1000);
@@ -77,32 +76,29 @@ class CitationsSection {
     }
 
     renderCitations(data) {
-        if (!this.container) {
-            console.error('Cannot render citations: container not found');
-            return;
-        }
+        if (!this.container) return;
         
         let html = `
-            <div class="citations-summary" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
-                <div class="summary-card" style="background: white; border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e9ecef;">
-                    <div class="summary-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #f72585, #b5179e); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">📚</div>
-                    <div class="summary-info" style="flex: 1;">
-                        <span class="summary-value" style="font-size: 1.5rem; font-weight: 800; display: block;">${data.total}</span>
-                        <span class="summary-label" style="font-size: 0.9rem; color: #6c757d;">Total Citations</span>
+            <div class="citations-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">📚</div>
+                    <div class="summary-info">
+                        <span class="summary-value">${data.total}</span>
+                        <span class="summary-label">Total Citations</span>
                     </div>
                 </div>
-                <div class="summary-card" style="background: white; border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e9ecef;">
-                    <div class="summary-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #4cc9f0, #4895ef); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">✅</div>
-                    <div class="summary-info" style="flex: 1;">
-                        <span class="summary-value" style="font-size: 1.5rem; font-weight: 800; display: block;">${data.correct}</span>
-                        <span class="summary-label" style="font-size: 0.9rem; color: #6c757d;">Correct Format</span>
+                <div class="summary-card">
+                    <div class="summary-icon">✅</div>
+                    <div class="summary-info">
+                        <span class="summary-value">${data.correct}</span>
+                        <span class="summary-label">Correct Format</span>
                     </div>
                 </div>
-                <div class="summary-card" style="background: white; border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e9ecef;">
-                    <div class="summary-icon" style="width: 50px; height: 50px; background: linear-gradient(135deg, #f8961e, #f9c74f); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">⚠️</div>
-                    <div class="summary-info" style="flex: 1;">
-                        <span class="summary-value" style="font-size: 1.5rem; font-weight: 800; display: block;">${data.needs_review}</span>
-                        <span class="summary-label" style="font-size: 0.9rem; color: #6c757d;">Needs Review</span>
+                <div class="summary-card">
+                    <div class="summary-icon">⚠️</div>
+                    <div class="summary-info">
+                        <span class="summary-value">${data.needs_review}</span>
+                        <span class="summary-label">Needs Review</span>
                     </div>
                 </div>
             </div>
@@ -111,27 +107,26 @@ class CitationsSection {
         `;
         
         data.citations.forEach(citation => {
-            const borderColor = citation.correct ? '#4cc9f0' : '#f8961e';
-            const badgeClass = citation.correct ? 'success' : 'warning';
-            const badgeColor = citation.correct ? '#4cc9f0' : '#f8961e';
+            const cardClass = citation.correct ? 'citation-card' : 'citation-card needs-review';
+            const badgeClass = citation.correct ? 'status-badge success' : 'status-badge warning';
             const badgeText = citation.correct ? '✅ Correct' : '⚠️ Needs Review';
             
             html += `
-                <div class="citation-card" style="background: white; border-radius: 16px; padding: 20px; margin-bottom: 15px; border-left: 4px solid ${borderColor}; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <div class="citation-status" style="margin-bottom: 10px;">
-                        <span class="status-badge ${badgeClass}" style="padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; background: ${badgeColor}; color: white; display: inline-block;">${badgeText}</span>
+                <div class="${cardClass}">
+                    <div class="citation-status">
+                        <span class="${badgeClass}">${badgeText}</span>
                     </div>
-                    <div class="citation-text" style="font-size: 1rem; margin-bottom: 10px; color: #212529; font-style: italic;">"${this.escapeHtml(citation.text)}"</div>
-                    <div class="citation-meta" style="display: flex; gap: 15px; font-size: 0.9rem; color: #6c757d; margin-bottom: 10px;">
-                        <span class="citation-format">${citation.format}</span>
-                        <span class="citation-location">Page ${citation.page}</span>
+                    <div class="citation-text">"${this.escapeHtml(citation.text)}"</div>
+                    <div class="citation-meta">
+                        <span>${citation.format}</span>
+                        <span>Page ${citation.page}</span>
                     </div>
             `;
             
             if (!citation.correct) {
                 html += `
-                    <div class="citation-suggestion" style="margin-top: 10px; padding: 10px; background: #fff9e6; border-radius: 8px; font-size: 0.9rem; border-left: 3px solid #f8961e;">
-                        <strong style="color: #212529;">Suggestion:</strong> ${this.escapeHtml(citation.suggestion)}
+                    <div class="citation-suggestion">
+                        <strong>Suggestion:</strong> ${this.escapeHtml(citation.suggestion)}
                     </div>
                 `;
             }
@@ -144,57 +139,34 @@ class CitationsSection {
     }
 
     showLoader() {
-        console.log('Showing citations loader');
         if (this.loader) {
-            this.loader.style.display = 'flex';
             this.loader.classList.remove('hidden');
         }
         if (this.container) {
-            this.container.style.display = 'none';
             this.container.classList.add('hidden');
         }
     }
 
     hideLoader() {
-        console.log('Hiding citations loader');
         if (this.loader) {
-            this.loader.style.display = 'none';
             this.loader.classList.add('hidden');
         }
         if (this.container) {
-            this.container.style.display = 'block';
             this.container.classList.remove('hidden');
         }
     }
 
-    renderEmpty() {
-        if (!this.container) return;
-        
-        this.container.innerHTML = `
-            <div class="empty-state" style="text-align: center; padding: 60px 20px;">
-                <div class="empty-icon" style="font-size: 4rem; margin-bottom: 20px;">📚</div>
-                <h3 style="font-size: 1.5rem; margin-bottom: 10px;">No Citations Found</h3>
-                <p style="color: #6c757d; margin-bottom: 20px;">Citations from your analyzed documents will appear here.</p>
-                <a href="#upload" class="btn-primary" style="display: inline-block; padding: 12px 30px; background: #4361ee; color: white; text-decoration: none; border-radius: 50px;">Upload Document</a>
-            </div>
-        `;
-    }
-
     renderError() {
-        if (!this.container) return;
-        
         this.container.innerHTML = `
-            <div class="error-state" style="text-align: center; padding: 60px 20px;">
-                <div class="error-icon" style="font-size: 4rem; margin-bottom: 20px;">❌</div>
-                <h3 style="font-size: 1.5rem; margin-bottom: 10px; color: #f94144;">Error Loading Citations</h3>
-                <p style="color: #6c757d; margin-bottom: 20px;">Please try again later.</p>
-                <button class="btn-primary" onclick="window.location.reload()" style="padding: 12px 30px; background: #4361ee; color: white; border: none; border-radius: 50px; cursor: pointer;">Retry</button>
+            <div class="error-state">
+                <div class="error-icon">❌</div>
+                <h3>Error Loading Citations</h3>
+                <p>Please try again later.</p>
             </div>
         `;
     }
 
     escapeHtml(text) {
-        if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
@@ -202,7 +174,10 @@ class CitationsSection {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, creating CitationsSection');
-    window.citationsSection = new CitationsSection();
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        new CitationsSection();
+    });
+} else {
+    new CitationsSection();
+}

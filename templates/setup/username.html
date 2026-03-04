@@ -62,18 +62,6 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        .error-message {
-            color: #e53e3e;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            display: none;
-        }
-        .success-message {
-            color: #38a169;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -92,40 +80,19 @@
             <button type="submit" class="save-btn" id="saveBtn">
                 Continue to Dashboard →
             </button>
-            
-            <div id="error-message" class="error-message"></div>
-            <div id="success-message" class="success-message"></div>
         </form>
-        
-        <p style="margin-top: 20px; font-size: 0.85rem; color: #a0aec0;">
-            You can change this later in settings
-        </p>
     </div>
 
     <script>
         async function saveUsername() {
             const username = document.getElementById('username').value.trim();
             const saveBtn = document.getElementById('saveBtn');
-            const errorDiv = document.getElementById('error-message');
-            const successDiv = document.getElementById('success-message');
-            
-            // Hide previous messages
-            errorDiv.style.display = 'none';
-            successDiv.style.display = 'none';
             
             if (!username) {
-                errorDiv.textContent = 'Please enter a username';
-                errorDiv.style.display = 'block';
+                alert('Please enter a username');
                 return;
             }
             
-            if (username.length < 2) {
-                errorDiv.textContent = 'Username must be at least 2 characters';
-                errorDiv.style.display = 'block';
-                return;
-            }
-            
-            // Disable button and show loading
             saveBtn.disabled = true;
             saveBtn.textContent = 'Saving...';
             
@@ -138,29 +105,20 @@
                     body: formData,
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    credentials: 'same-origin'
+                    }
                 });
                 
                 const data = await response.json();
                 
                 if (data.error) {
-                    errorDiv.textContent = data.error;
-                    errorDiv.style.display = 'block';
+                    alert(data.error);
                     saveBtn.disabled = false;
                     saveBtn.textContent = 'Continue to Dashboard →';
                 } else {
-                    successDiv.textContent = 'Username saved! Redirecting...';
-                    successDiv.style.display = 'block';
-                    
-                    // Redirect to dashboard
-                    setTimeout(() => {
-                        window.location.href = data.redirect || '/dashboard/';
-                    }, 1000);
+                    window.location.href = data.redirect;
                 }
             } catch (error) {
-                errorDiv.textContent = 'An error occurred. Please try again.';
-                errorDiv.style.display = 'block';
+                alert('An error occurred');
                 saveBtn.disabled = false;
                 saveBtn.textContent = 'Continue to Dashboard →';
             }

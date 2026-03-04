@@ -1,8 +1,20 @@
 class HistorySection {
     constructor() {
+        if (window.historySectionInstance) {
+            return window.historySectionInstance;
+        }
+        
+        console.log('HistorySection initializing...');
         this.container = document.getElementById('history-container');
         this.loader = document.getElementById('history-loader');
         this.currentFilter = 'all';
+        
+        if (!this.container) {
+            console.warn('History container not found');
+            return;
+        }
+        
+        window.historySectionInstance = this;
         this.init();
     }
 
@@ -12,49 +24,14 @@ class HistorySection {
 
     async loadHistory() {
         this.showLoader();
+        
         try {
-            // Mock data
             const mockHistory = [
-                {
-                    id: 1,
-                    title: 'Research Paper on AI Ethics',
-                    type: 'document',
-                    date: new Date().toISOString(),
-                    score: 12,
-                    verdict: 'Original'
-                },
-                {
-                    id: 2,
-                    title: 'Blog Post - Future of Technology',
-                    type: 'text',
-                    date: new Date(Date.now() - 86400000).toISOString(),
-                    score: 28,
-                    verdict: 'Suspicious'
-                },
-                {
-                    id: 3,
-                    title: 'Thesis - Quantum Computing',
-                    type: 'document',
-                    date: new Date(Date.now() - 172800000).toISOString(),
-                    score: 45,
-                    verdict: 'Plagiarized'
-                },
-                {
-                    id: 4,
-                    title: 'Marketing Content - Q1 Report',
-                    type: 'document',
-                    date: new Date(Date.now() - 259200000).toISOString(),
-                    score: 8,
-                    verdict: 'Original'
-                },
-                {
-                    id: 5,
-                    title: 'Product Description - New Launch',
-                    type: 'text',
-                    date: new Date(Date.now() - 345600000).toISOString(),
-                    score: 22,
-                    verdict: 'Suspicious'
-                }
+                { id: 1, title: 'Research Paper on AI Ethics', type: 'document', date: new Date().toISOString(), score: 12, verdict: 'Original' },
+                { id: 2, title: 'Blog Post - Future of Technology', type: 'text', date: new Date(Date.now() - 86400000).toISOString(), score: 28, verdict: 'Suspicious' },
+                { id: 3, title: 'Thesis - Quantum Computing', type: 'document', date: new Date(Date.now() - 172800000).toISOString(), score: 45, verdict: 'Plagiarized' },
+                { id: 4, title: 'Marketing Content - Q1 Report', type: 'document', date: new Date(Date.now() - 259200000).toISOString(), score: 8, verdict: 'Original' },
+                { id: 5, title: 'Product Description - New Launch', type: 'text', date: new Date(Date.now() - 345600000).toISOString(), score: 22, verdict: 'Suspicious' }
             ];
             
             this.historyData = mockHistory;
@@ -62,7 +39,7 @@ class HistorySection {
             setTimeout(() => {
                 this.renderHistory(mockHistory);
                 this.hideLoader();
-            }, 800);
+            }, 1000);
             
         } catch (error) {
             console.error('Error loading history:', error);
@@ -88,13 +65,11 @@ class HistorySection {
         history.forEach(item => {
             const date = new Date(item.date);
             const timeAgo = this.timeAgo(date);
-            const verdictClass = this.getVerdictClass(item.score);
+            const verdictClass = item.score < 15 ? 'success' : (item.score < 30 ? 'warning' : 'danger');
             
             html += `
                 <div class="history-item" data-type="${item.type}" data-date="${item.date}">
-                    <div class="history-icon">
-                        ${item.type === 'document' ? '📄' : '📝'}
-                    </div>
+                    <div class="history-icon">${item.type === 'document' ? '📄' : '📝'}</div>
                     <div class="history-details">
                         <div class="history-header">
                             <h4>${this.escapeHtml(item.title)}</h4>
@@ -102,18 +77,12 @@ class HistorySection {
                         </div>
                         <div class="history-meta">
                             <span class="history-score">${item.score}% Match</span>
-                            <span class="history-verdict ${verdictClass}">
-                                ${item.verdict}
-                            </span>
+                            <span class="history-verdict ${verdictClass}">${item.verdict}</span>
                         </div>
                     </div>
                     <div class="history-actions">
-                        <button class="btn-icon-only view-history" title="View" data-id="${item.id}">
-                            👁️
-                        </button>
-                        <button class="btn-icon-only download-history" title="Download" data-id="${item.id}">
-                            📥
-                        </button>
+                        <button class="btn-icon view-history" data-id="${item.id}" title="View">👁️</button>
+                        <button class="btn-icon download-history" data-id="${item.id}" title="Download">📥</button>
                     </div>
                 </div>
             `;
@@ -122,12 +91,6 @@ class HistorySection {
         html += '</div>';
         this.container.innerHTML = html;
         this.attachEventListeners();
-    }
-
-    getVerdictClass(score) {
-        if (score < 15) return 'success';
-        if (score < 30) return 'warning';
-        return 'danger';
     }
 
     timeAgo(date) {
@@ -144,16 +107,12 @@ class HistorySection {
     }
 
     attachEventListeners() {
-        if (!this.container) return;
-        
         // Filter buttons
         this.container.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                e.preventDefault();
                 const filter = btn.dataset.filter;
                 this.applyFilter(filter);
                 
-                // Update active class
                 this.container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
             });
@@ -161,19 +120,15 @@ class HistorySection {
 
         // View buttons
         this.container.querySelectorAll('.view-history').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const id = btn.dataset.id;
-                alert(`Viewing history item #${id}`);
+            btn.addEventListener('click', () => {
+                alert(`Viewing history item #${btn.dataset.id}`);
             });
         });
 
         // Download buttons
         this.container.querySelectorAll('.download-history').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const id = btn.dataset.id;
-                this.downloadHistoryItem(id);
+            btn.addEventListener('click', () => {
+                this.downloadHistoryItem(btn.dataset.id);
             });
         });
     }
@@ -211,57 +166,39 @@ This is a sample history item download.`;
         const a = document.createElement('a');
         a.href = url;
         a.download = `history-${id}.txt`;
-        document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
     }
 
     showLoader() {
         if (this.loader) {
-            this.loader.style.display = 'flex';
+            this.loader.classList.remove('hidden');
         }
         if (this.container) {
-            this.container.style.display = 'none';
+            this.container.classList.add('hidden');
         }
     }
 
     hideLoader() {
         if (this.loader) {
-            this.loader.style.display = 'none';
+            this.loader.classList.add('hidden');
         }
         if (this.container) {
-            this.container.style.display = 'block';
+            this.container.classList.remove('hidden');
         }
-    }
-
-    renderEmpty() {
-        if (!this.container) return;
-        
-        this.container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">🕒</div>
-                <h3>No History Yet</h3>
-                <p>Your analysis history will appear here.</p>
-            </div>
-        `;
     }
 
     renderError() {
-        if (!this.container) return;
-        
         this.container.innerHTML = `
             <div class="error-state">
                 <div class="error-icon">❌</div>
                 <h3>Error Loading History</h3>
                 <p>Please try again later.</p>
-                <button class="btn-primary" onclick="window.location.reload()" style="padding: 12px 30px; border: none; cursor: pointer;">Retry</button>
             </div>
         `;
     }
 
     escapeHtml(text) {
-        if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
@@ -269,6 +206,10 @@ This is a sample history item download.`;
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    window.historySection = new HistorySection();
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        new HistorySection();
+    });
+} else {
+    new HistorySection();
+}

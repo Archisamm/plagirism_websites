@@ -1,26 +1,31 @@
 class SimilaritySection {
     constructor() {
+        if (window.similaritySectionInstance) {
+            return window.similaritySectionInstance;
+        }
+        
+        console.log('SimilaritySection initializing...');
         this.container = document.getElementById('similarity-container');
         this.loader = document.getElementById('similarity-loader');
         
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.init());
-        } else {
-            this.init();
+        if (!this.container) {
+            console.warn('Similarity container not found');
+            return;
         }
+        
+        window.similaritySectionInstance = this;
+        this.init();
     }
 
     async init() {
-        setTimeout(() => {
-            this.loadSimilarity();
-        }, 100);
+        await this.loadSimilarity();
     }
 
     async loadSimilarity() {
         this.showLoader();
+        
         try {
-            // Mock data
-            const data = {
+            const mockData = {
                 similarities: [
                     {
                         id: 1,
@@ -28,11 +33,7 @@ class SimilaritySection {
                         type: 'Document',
                         date: new Date(Date.now() - 172800000).toISOString(),
                         score: 12,
-                        sources: {
-                            internet: 5,
-                            publications: 7,
-                            internal: 0
-                        }
+                        sources: { internet: 5, publications: 7, internal: 0 }
                     },
                     {
                         id: 2,
@@ -40,11 +41,7 @@ class SimilaritySection {
                         type: 'Text',
                         date: new Date(Date.now() - 432000000).toISOString(),
                         score: 28,
-                        sources: {
-                            internet: 18,
-                            publications: 5,
-                            internal: 5
-                        }
+                        sources: { internet: 18, publications: 5, internal: 5 }
                     },
                     {
                         id: 3,
@@ -52,20 +49,19 @@ class SimilaritySection {
                         type: 'Document',
                         date: new Date(Date.now() - 864000000).toISOString(),
                         score: 45,
-                        sources: {
-                            internet: 25,
-                            publications: 15,
-                            internal: 5
-                        }
+                        sources: { internet: 25, publications: 15, internal: 5 }
                     }
                 ]
             };
             
-            this.renderSimilarity(data);
+            setTimeout(() => {
+                this.renderSimilarity(mockData);
+                this.hideLoader();
+            }, 1000);
+            
         } catch (error) {
             console.error('Error loading similarity:', error);
             this.renderError();
-        } finally {
             this.hideLoader();
         }
     }
@@ -73,73 +69,59 @@ class SimilaritySection {
     renderSimilarity(data) {
         if (!this.container) return;
         
-        const html = `
-            <div class="similarity-timeline">
-                ${data.similarities.map(item => {
-                    const date = new Date(item.date);
-                    const formattedDate = date.toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        year: 'numeric' 
-                    });
-                    
-                    let meterClass = 'meter-success';
-                    if (item.score >= 15 && item.score < 30) meterClass = 'meter-warning';
-                    if (item.score >= 30) meterClass = 'meter-danger';
-                    
-                    return `
-                        <div class="timeline-item">
-                            <div class="timeline-date">${formattedDate}</div>
-                            <div class="timeline-content">
-                                <div class="document-info">
-                                    <h4>${this.escapeHtml(item.title)}</h4>
-                                    <span class="document-type">${item.type}</span>
-                                </div>
-                                
-                                <div class="similarity-meter">
-                                    <div class="meter-bar">
-                                        <div class="meter-fill ${meterClass}" style="width: ${item.score}%"></div>
-                                    </div>
-                                    <span class="meter-score">${item.score}%</span>
-                                </div>
+        let html = '<div class="similarity-timeline">';
+        
+        data.similarities.forEach(item => {
+            const date = new Date(item.date);
+            const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            const meterClass = item.score < 15 ? 'success' : (item.score < 30 ? 'warning' : 'danger');
+            
+            html += `
+                <div class="timeline-item">
+                    <div class="timeline-date">${formattedDate}</div>
+                    <div class="timeline-content">
+                        <div class="document-info">
+                            <h4>${this.escapeHtml(item.title)}</h4>
+                            <span class="document-type">${item.type}</span>
+                        </div>
+                        
+                        <div class="similarity-meter">
+                            <div class="meter-bar">
+                                <div class="meter-fill ${meterClass}" style="width: ${item.score}%"></div>
+                            </div>
+                            <span class="meter-score">${item.score}%</span>
+                        </div>
 
-                                <div class="similarity-breakdown">
-                                    <div class="breakdown-item">
-                                        <span class="breakdown-label">Internet</span>
-                                        <span class="breakdown-value">${item.sources.internet}</span>
-                                    </div>
-                                    <div class="breakdown-item">
-                                        <span class="breakdown-label">Publications</span>
-                                        <span class="breakdown-value">${item.sources.publications}</span>
-                                    </div>
-                                    <div class="breakdown-item">
-                                        <span class="breakdown-label">Internal</span>
-                                        <span class="breakdown-value">${item.sources.internal}</span>
-                                    </div>
-                                </div>
-
-                                <button class="btn-small btn-outline view-similarity" data-id="${item.id}" style="margin-top: 10px;">
-                                    View Detailed Analysis
-                                </button>
+                        <div class="similarity-breakdown">
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Internet</span>
+                                <span class="breakdown-value">${item.sources.internet}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Publications</span>
+                                <span class="breakdown-value">${item.sources.publications}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Internal</span>
+                                <span class="breakdown-value">${item.sources.internal}</span>
                             </div>
                         </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-        
-        this.container.innerHTML = html;
-        this.attachEventListeners();
-    }
 
-    attachEventListeners() {
-        if (!this.container) return;
+                        <button class="btn-small btn-outline view-similarity" data-id="${item.id}">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        this.container.innerHTML = html;
         
         this.container.querySelectorAll('.view-similarity').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const id = btn.dataset.id;
-                alert(`Viewing detailed similarity analysis for item #${id}`);
+            btn.addEventListener('click', () => {
+                alert(`Viewing similarity details for item #${btn.dataset.id}`);
             });
         });
     }
@@ -150,7 +132,6 @@ class SimilaritySection {
         }
         if (this.container) {
             this.container.classList.add('hidden');
-            this.container.innerHTML = '';
         }
     }
 
@@ -163,33 +144,17 @@ class SimilaritySection {
         }
     }
 
-    renderEmpty() {
-        if (!this.container) return;
-        
-        this.container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">📈</div>
-                <h3>No Similarity Data</h3>
-                <p>Run an analysis to see similarity metrics here.</p>
-            </div>
-        `;
-    }
-
     renderError() {
-        if (!this.container) return;
-        
         this.container.innerHTML = `
             <div class="error-state">
                 <div class="error-icon">❌</div>
                 <h3>Error Loading Similarity Data</h3>
                 <p>Please try again later.</p>
-                <button class="btn-primary" onclick="window.location.reload()" style="padding: 12px 30px; border: none; cursor: pointer;">Retry</button>
             </div>
         `;
     }
 
     escapeHtml(text) {
-        if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
@@ -199,8 +164,8 @@ class SimilaritySection {
 // Initialize
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        window.similaritySection = new SimilaritySection();
+        new SimilaritySection();
     });
 } else {
-    window.similaritySection = new SimilaritySection();
+    new SimilaritySection();
 }

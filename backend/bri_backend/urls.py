@@ -15,7 +15,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     # ==============================
-    # PUBLIC LANDING PAGES (No login required)
+    # PUBLIC LANDING PAGES
     # ==============================
     path("", views.public_home, name="public_home"),
     path("home/", views.home, name="home"),
@@ -26,7 +26,7 @@ urlpatterns = [
     path("contact/", views.contact_page, name="contact"),
 
     # ==============================
-    # AUTHENTICATION PAGES (Public)
+    # AUTHENTICATION PAGES
     # ==============================
     path("login/", account_views.login_page, name="login"),
     path("signup/", views.signup_page, name="signup"),
@@ -38,12 +38,14 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
 
     # ==============================
-    # ACCOUNT MANAGEMENT (Protected)
+    # ACCOUNT MANAGEMENT
     # ==============================
     path("accounts/", include("accounts.urls")),
     path("after-login/", account_views.after_login, name="after_login"),
-    path("setup/profile/", account_views.complete_profile_page, name="complete_profile"),
-    path("save-profile/", account_views.save_profile, name="save_profile"),
+    
+    # ✅ NEW: Username setup (replaces old profile page)
+    path("setup/username/", account_views.username_page, name="username_page"),
+    path("save-username/", account_views.save_username, name="save_username"),
 
     # ==============================
     # PLAGIARISM API
@@ -51,10 +53,10 @@ urlpatterns = [
     path("api/", include("plagiarism.urls")),
 
     # ==============================
-    # PROTECTED ANALYSIS PAGE (Login required)
+    # PROTECTED ANALYSIS PAGES
     # ==============================
     path("dashboard/", views.unified_dashboard, name="unified_dashboard"),
-    path("analyze/", views.unified_dashboard, name="analyze"),  # Alias
+    path("analyze/", views.unified_dashboard, name="analyze"),
 ]
 
 # ==============================
