@@ -14,21 +14,48 @@ def login_page(request):
 def after_login(request):
     """
     After Google login:
-    - If profile not completed -> complete profile
-    - Else redirect to unified dashboard
+    - If user has no display_name -> ask for username
+    - Else -> go to dashboard
     """
     user = request.user
-
-    if not getattr(user, "display_name", None):
-        return redirect("/setup/profile/")
-
+    
+    # Check if user already has a username/display_name
+    if not user.display_name:
+        return redirect("/setup/username/")
+    
     return redirect("/dashboard/")
 
 
 @login_required
-def complete_profile_page(request):
-    """Profile completion page"""
-    return render(request, "setup/complete_profile.html")
+def username_page(request):
+    """Username setup page"""
+    return render(request, "setup/username.html")
+
+
+@login_required
+@csrf_exempt
+def save_username(request):
+    """Save username only"""
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+    
+    user = request.user
+    username = request.POST.get("display_name", "").strip()
+    
+    if not username:
+        return JsonResponse({"error": "Username is required"}, status=400)
+    
+    if len(username) < 2:
+        return JsonResponse({"error": "Username must be at least 2 characters"}, status=400)
+    
+    # Save only the username/display_name
+    user.display_name = username
+    user.save()
+    
+    return JsonResponse({
+        "message": "Username saved",
+        "redirect": "/dashboard/"
+    })
 
 
 @login_required
@@ -38,29 +65,6 @@ def me(request):
     return JsonResponse({
         "email": u.email,
         "display_name": getattr(u, "display_name", ""),
-    })
-
-
-@login_required
-@csrf_exempt
-def save_profile(request):
-    """Save user profile"""
-    if request.method != "POST":
-        return JsonResponse({"error": "POST only"}, status=405)
-
-    user = request.user
-
-    display_name = request.POST.get("display_name", "").strip()
-
-    user.display_name = display_name or user.email.split("@")[0]
-    user.institution = request.POST.get("institution", "")
-    user.phone = request.POST.get("phone", "")
-    user.bio = request.POST.get("bio", "")
-    user.save()
-
-    return JsonResponse({
-        "message": "Profile saved",
-        "redirect": "/dashboard/"
     })
 
 

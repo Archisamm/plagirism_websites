@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Choose Username | BRI AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
+        .username-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h2 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #718096;
+            margin-bottom: 30px;
+        }
+        .username-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .username-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .save-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+        .success-message {
+            color: #38a169;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="username-container">
+        <h2>Welcome to BRI AI! 👋</h2>
+        <p>Choose a username to get started</p>
+        
+        <form id="username-form" onsubmit="event.preventDefault(); saveUsername();">
+            <input type="text" 
+                   id="username" 
+                   class="username-input" 
+                   placeholder="Enter your username"
+                   maxlength="50"
+                   required>
+            
+            <button type="submit" class="save-btn" id="saveBtn">
+                Continue to Dashboard →
+            </button>
+            
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+        </form>
+        
+        <p style="margin-top: 20px; font-size: 0.85rem; color: #a0aec0;">
+            You can change this later in settings
+        </p>
+    </div>
+
+    <script>
+        async function saveUsername() {
+            const username = document.getElementById('username').value.trim();
+            const saveBtn = document.getElementById('saveBtn');
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            if (!username) {
+                errorDiv.textContent = 'Please enter a username';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (username.length < 2) {
+                errorDiv.textContent = 'Username must be at least 2 characters';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Disable button and show loading
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('display_name', username);
+                
+                const response = await fetch('/save-username/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    errorDiv.textContent = data.error;
+                    errorDiv.style.display = 'block';
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Continue to Dashboard →';
+                } else {
+                    successDiv.textContent = 'Username saved! Redirecting...';
+                    successDiv.style.display = 'block';
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '/dashboard/';
+                    }, 1000);
+                }
+            } catch (error) {
+                errorDiv.textContent = 'An error occurred. Please try again.';
+                errorDiv.style.display = 'block';
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Continue to Dashboard →';
+            }
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
