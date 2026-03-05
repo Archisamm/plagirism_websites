@@ -255,7 +255,7 @@ def log_print(*args, **kwargs):
 # GOOGLE CUSTOM SEARCH CONFIG
 # =====================================
 GOOGLE_SEARCH_API = "https://www.googleapis.com/customsearch/v1"
-API_KEY = "AIzaSyAN2q0ZQe1uB1sGwSMXtchoGtnjSPAiwZw"cd
+API_KEY = "AIzaSyAN2q0ZQe1uB1sGwSMXtchoGtnjSPAiwZw"
 CX_ID = "b173eaadf448c4983"
 
 # =====================================
