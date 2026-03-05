@@ -233,19 +233,29 @@
 
 #     return list(unique.values())[:5]
 
+"""
+source_finder.py - REAL Global Source Search using Google Custom Search API
+"""
 
 import requests
 from bs4 import BeautifulSoup
 from rapidfuzz import fuzz
 import re
-import time
-from urllib.parse import quote_plus
+import sys
 
 # =====================================
-# GOOGLE CUSTOM SEARCH CONFIG (YOUR KEYS)
+# FORCE PRINT TO FLUSH IMMEDIATELY
+# =====================================
+def log_print(*args, **kwargs):
+    """Force print to appear immediately"""
+    print(*args, **kwargs)
+    sys.stdout.flush()  # This forces the print to show immediately
+
+# =====================================
+# GOOGLE CUSTOM SEARCH CONFIG
 # =====================================
 GOOGLE_SEARCH_API = "https://www.googleapis.com/customsearch/v1"
-API_KEY = "AIzaSyAnL8xfNRPxr0Rf8CWwyQQ5X3uZ_yylPiI"
+API_KEY = "AIzaSyAN2q0ZQe1uB1sGwSMXtchoGtnjSPAiwZw"cd
 CX_ID = "b173eaadf448c4983"
 
 # =====================================
@@ -261,80 +271,48 @@ def clean_text(text):
 # EXTRACT AUTHOR FROM PAGE
 # =====================================
 def extract_author(soup):
-    # Try meta tags first
     meta_author = soup.find("meta", {"name": "author"})
     if meta_author and meta_author.get("content"):
         return meta_author.get("content").strip()
-    
-    # Try meta property
-    meta_prop = soup.find("meta", {"property": "article:author"})
-    if meta_prop and meta_prop.get("content"):
-        return meta_prop.get("content").strip()
-    
-    # Try byline classes
-    byline = soup.find(class_=re.compile(r"author|byline", re.I))
-    if byline:
-        return byline.get_text().strip()
-    
     return "Unknown"
 
 # =====================================
 # EXTRACT TITLE FROM PAGE
 # =====================================
 def extract_title(soup):
-    # Try title tag
-    if soup.title:
-        return soup.title.string.strip() if soup.title.string else "Unknown"
-    
-    # Try h1
-    h1 = soup.find("h1")
-    if h1:
-        return h1.get_text().strip()
-    
+    if soup.title and soup.title.string:
+        return soup.title.string.strip()
     return "Unknown Source"
 
 # =====================================
-# FETCH PAGE CONTENT (with timeout)
+# FETCH PAGE CONTENT
 # =====================================
 def fetch_page_content(url, timeout=5):
-    """Fetch and parse webpage content"""
     try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
         response = requests.get(url, headers=headers, timeout=timeout)
-        response.raise_for_status()
-        
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Remove script and style elements
         for script in soup(["script", "style"]):
             script.decompose()
         
-        # Get text
         text = soup.get_text()
-        
-        # Break into lines and remove leading/trailing space
-        lines = (line.strip() for line in text.splitlines())
-        # Break multi-headlines into a line each
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        # Drop blank lines
-        text = ' '.join(chunk for chunk in chunks if chunk)
+        text = ' '.join(text.split())
         
         return {
-            'text': text[:5000],  # Limit text length
+            'text': text[:5000],
             'title': extract_title(soup),
             'author': extract_author(soup)
         }
-    except Exception as e:
-        print(f"Error fetching {url}: {e}")
+    except:
         return None
 
 # =====================================
 # GOOGLE SEARCH
 # =====================================
 def google_search(query, num_results=3):
-    """Search Google Custom Search API"""
+    log_print(f"  🔍 Google search: {query[:80]}...")
+    
     try:
         params = {
             'key': API_KEY,
@@ -344,75 +322,80 @@ def google_search(query, num_results=3):
         }
         
         response = requests.get(GOOGLE_SEARCH_API, params=params, timeout=10)
+        
+        if response.status_code != 200:
+            log_print(f"  ⚠️ Google API returned {response.status_code}")
+            return []
+        
         data = response.json()
         
-        if 'items' in data:
-            return [item['link'] for item in data['items']]
-        else:
-            print(f"No results for query: {query[:50]}...")
+        if 'error' in data:
+            log_print(f"  ⚠️ API Error: {data['error'].get('message', 'Unknown')}")
             return []
+        
+        if 'items' not in data:
+            log_print(f"  ℹ️ No results found")
+            return []
+        
+        urls = [item['link'] for item in data['items']]
+        log_print(f"  ✅ Found {len(urls)} URLs")
+        return urls
+        
     except Exception as e:
-        print(f"Google search error: {e}")
+        log_print(f"  ❌ Google search error: {str(e)[:100]}")
         return []
 
 # =====================================
 # GET SEARCH QUERIES FROM TEXT
 # =====================================
-def get_search_queries(text, max_queries=3):
-    """Extract meaningful search queries from text"""
-    # Split into sentences
-    sentences = re.split(r'[.!?]', text)
-    
+def get_search_queries(text, max_queries=2):
+    sentences = re.split(r'[.!?]+', text)
     queries = []
-    for sentence in sentences:
-        # Clean and filter
-        sentence = sentence.strip()
-        if len(sentence) < 50 or len(sentence) > 200:
-            continue
-        
-        # Take first 100 chars
-        queries.append(sentence[:150])
-        
-        if len(queries) >= max_queries:
-            break
     
-    # If no good sentences, take first part of text
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if 50 < len(sentence) < 300:
+            queries.append(sentence[:150])
+            if len(queries) >= max_queries:
+                break
+    
     if not queries and len(text) > 50:
         queries.append(text[:200])
     
     return queries
 
 # =====================================
-# MAIN SOURCE FINDER (WORKING VERSION)
+# MAIN SOURCE FINDER
 # =====================================
 def search_sources(text):
-    """Main function to search for sources"""
-    print("🌍 Starting global source search...")
+    log_print("\n" + "="*60)
+    log_print("🌍 REAL GLOBAL SOURCE SEARCH STARTED")
+    log_print("="*60)
     
-    if not text or len(text) < 50:
-        print("❌ Text too short")
+    if not text or len(text) < 100:
+        log_print("❌ Text too short")
         return []
     
-    # Get search queries
+    log_print(f"📝 Input text length: {len(text)} characters")
+    
     queries = get_search_queries(text)
-    print(f"🔍 Generated {len(queries)} search queries")
+    log_print(f"🔍 Generated {len(queries)} search queries")
     
-    all_urls = set()
     all_sources = []
+    seen_urls = set()
     
-    # Search for each query
-    for i, query in enumerate(queries):
-        print(f"  Searching query {i+1}: {query[:50]}...")
+    for query_idx, query in enumerate(queries):
+        log_print(f"\n📌 Processing query {query_idx + 1}/{len(queries)}")
         
         urls = google_search(query, num_results=2)
         
         for url in urls:
-            if url in all_urls:
+            if url in seen_urls:
                 continue
             
-            all_urls.add(url)
+            seen_urls.add(url)
+            log_print(f"  🔗 Fetching: {url[:80]}...")
             
-            # Fetch page content
             page_data = fetch_page_content(url)
             if not page_data:
                 continue
@@ -423,28 +406,23 @@ def search_sources(text):
                 page_data['text'][:1000].lower()
             )
             
-            # Only include if similarity > 30%
-            if similarity > 30:
+            if similarity > 25:
                 source = {
-                    'title': page_data['title'],
+                    'title': page_data['title'][:100],
                     'author': page_data['author'],
                     'url': url,
-                    'similarity': round(similarity / 10, 2),  # Convert to 0-10 scale
+                    'similarity': round(similarity, 1),
                     'type': 'web'
                 }
                 all_sources.append(source)
-                print(f"  ✅ Found source: {source['title'][:50]}... ({source['similarity']}%)")
+                log_print(f"  ✅ MATCH: {similarity}% - {page_data['title'][:60]}...")
     
-    # Remove duplicates by URL
-    unique_sources = []
-    seen_urls = set()
-    for source in all_sources:
-        if source['url'] not in seen_urls:
-            seen_urls.add(source['url'])
-            unique_sources.append(source)
+    # Sort by similarity
+    all_sources.sort(key=lambda x: x['similarity'], reverse=True)
     
-    # Sort by similarity (highest first)
-    unique_sources.sort(key=lambda x: x['similarity'], reverse=True)
+    log_print("\n" + "="*60)
+    log_print(f"✅ Search complete! Found {len(all_sources)} sources")
+    log_print("="*60)
     
-    print(f"🔎 Total unique sources found: {len(unique_sources)}")
-    return unique_sources[:10]  # Return top 10 sources
+    return all_sources[:8]
+

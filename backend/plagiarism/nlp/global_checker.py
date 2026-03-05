@@ -160,7 +160,7 @@ from rapidfuzz import fuzz
 # =====================================
 # GOOGLE CONFIG (YOUR KEYS)
 # =====================================
-GOOGLE_API_KEY = "AIzaSyAnL8xfNRPxr0Rf8CWwyQQ5X3uZ_yylPiI"
+GOOGLE_API_KEY = "AIzaSyAN2q0ZQe1uB1sGwSMXtchoGtnjSPAiwZw"
 GOOGLE_CX = "b173eaadf448c4983"
 
 # =====================================

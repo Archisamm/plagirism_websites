@@ -6,100 +6,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Inter', sans-serif;
+            padding: 20px;
         }
-        .username-container {
-            background: white;
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 40px;
-            width: 400px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
             text-align: center;
         }
-        h2 {
-            color: #2d3748;
-            margin-bottom: 10px;
-        }
+        
         p {
-            color: #718096;
+            color: #666;
+            text-align: center;
             margin-bottom: 30px;
         }
-        .username-input {
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        input {
             width: 100%;
             padding: 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
             transition: all 0.3s ease;
         }
-        .username-input:focus {
-            border-color: #667eea;
+        
+        input:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
         }
-        .save-btn {
+        
+        button {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 10px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .save-btn:hover {
+        
+        button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="username-container">
-        <h2>Welcome to BRI AI! 👋</h2>
-        <p>Choose a username to get started</p>
+    <div class="container">
+        <h1>Welcome! 👋</h1>
+        <p>Choose a username to continue</p>
         
-        <form id="username-form" onsubmit="event.preventDefault(); saveUsername();">
-            <input type="text" 
-                   id="username" 
-                   class="username-input" 
-                   placeholder="Enter your username"
-                   maxlength="50"
-                   required>
+        <form id="usernameForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required minlength="2">
+                <div class="error" id="usernameError"></div>
+            </div>
             
-            <button type="submit" class="save-btn" id="saveBtn">
-                Continue to Dashboard →
-            </button>
+            <button type="submit" id="submitBtn">Continue to Dashboard →</button>
         </form>
     </div>
 
     <script>
-        async function saveUsername() {
-            const username = document.getElementById('username').value.trim();
-            const saveBtn = document.getElementById('saveBtn');
+        document.getElementById('usernameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            if (!username) {
-                alert('Please enter a username');
+            const username = document.getElementById('username').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            const errorDiv = document.getElementById('usernameError');
+            
+            if (!username || username.length < 2) {
+                errorDiv.textContent = 'Username must be at least 2 characters';
+                errorDiv.style.display = 'block';
                 return;
             }
             
-            saveBtn.disabled = true;
-            saveBtn.textContent = 'Saving...';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            const formData = new FormData();
+            formData.append('display_name', username);
             
             try {
-                const formData = new FormData();
-                formData.append('display_name', username);
-                
                 const response = await fetch('/save-username/', {
                     method: 'POST',
                     body: formData,
@@ -111,18 +166,20 @@
                 const data = await response.json();
                 
                 if (data.error) {
-                    alert(data.error);
-                    saveBtn.disabled = false;
-                    saveBtn.textContent = 'Continue to Dashboard →';
+                    errorDiv.textContent = data.error;
+                    errorDiv.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Continue to Dashboard →';
                 } else {
                     window.location.href = data.redirect;
                 }
-            } catch (error) {
-                alert('An error occurred');
-                saveBtn.disabled = false;
-                saveBtn.textContent = 'Continue to Dashboard →';
+            } catch (err) {
+                errorDiv.textContent = 'An error occurred. Please try again.';
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Continue to Dashboard →';
             }
-        }
+        });
         
         function getCookie(name) {
             let cookieValue = null;

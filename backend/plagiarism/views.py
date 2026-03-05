@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 import json
 import time
+import sys
 import traceback
 from datetime import datetime, timedelta
 
@@ -32,8 +33,11 @@ def verdict_from_score(score):
 # ======================================================
 @csrf_exempt
 def upload_document(request):
-    print("✅ upload_document called")
+    print("\n" + "🔥"*50)
+    print("🔥🔥🔥 UPLOAD DOCUMENT CALLED 🔥🔥🔥")
+    print("🔥"*50)
     print("REQUEST METHOD:", request.method)
+    sys.stdout.flush()  # Add this at the top
 
     if request.method != "POST":
         return JsonResponse({"error": "POST only"}, status=405)
@@ -53,9 +57,7 @@ def upload_document(request):
         )
 
         print("📁 File saved at:", document.file.path)
-
-        # ⭐ IMPORTANT FOR RENDER FILESYSTEM
-        time.sleep(0.5)
+        sys.stdout.flush()
 
         # -----------------------------
         # TEXT EXTRACTION
@@ -63,12 +65,10 @@ def upload_document(request):
         extracted_text = extract_text(document.file.path)
 
         print("🧠 Extracted text length:", len(extracted_text))
+        sys.stdout.flush()
 
         if not extracted_text or not extracted_text.strip():
-            return JsonResponse(
-                {"error": "Could not extract text"},
-                status=400
-            )
+            return JsonResponse({"error": "Could not extract text"}, status=400)
 
         # -----------------------------
         # PREPROCESS
@@ -76,10 +76,7 @@ def upload_document(request):
         sentences = preprocess_text(extracted_text)
 
         if not sentences:
-            return JsonResponse(
-                {"error": "Text too short"},
-                status=400
-            )
+            return JsonResponse({"error": "Text too short"}, status=400)
 
         # -----------------------------
         # LOCAL SIMILARITY
@@ -92,11 +89,26 @@ def upload_document(request):
         # -----------------------------
         # GLOBAL SOURCE SEARCH
         # -----------------------------
-        print("🌍 Searching global sources...")
-        sources = search_sources(extracted_text)
-        highlights = highlight_matches(extracted_text, sources) 
+        print("\n" + "🌐"*30)
+        print("🌐 CALLING GLOBAL SOURCE SEARCH...")
+        print("🌐"*30)
+        sys.stdout.flush()
+        
+        # IMPORTANT: Force import to make sure we have the latest version
+        import importlib
+        from .nlp import source_finder
+        importlib.reload(source_finder)  # Force reload
+        
+        sources = source_finder.search_sources(extracted_text)
+        
+        print("\n" + "🔎"*30)
+        print(f"🔎 SOURCES FOUND: {len(sources)}")
+        for i, s in enumerate(sources[:3]):
+            print(f"  Source {i+1}: {s.get('title', 'N/A')[:50]} - {s.get('similarity', 0)}%")
+        print("🔎"*30)
+        sys.stdout.flush()
 
-        print("🔎 Sources found:", len(sources))
+        highlights = highlight_matches(extracted_text, sources)
 
         # -----------------------------
         # SAVE REPORT
@@ -127,14 +139,11 @@ def upload_document(request):
 
     except Exception as e:
         print("❌ ANALYSIS ERROR")
+        import traceback
         traceback.print_exc()
+        sys.stdout.flush()
 
-        return JsonResponse(
-            {"error": "Analysis failed"},
-            status=500
-        )
-
-
+        return JsonResponse({"error": "Analysis failed"}, status=500)
 # ======================================================
 # TEXT ANALYSIS (PASTE TEXT)
 # ======================================================
