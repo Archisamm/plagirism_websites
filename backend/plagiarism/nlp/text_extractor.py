@@ -231,16 +231,18 @@
 
 #     return text[:8000]
 
+import os
 import pdfplumber
 import docx
-import os
-
 
 # ======================================
 # MAIN ENTRY
 # ======================================
 def extract_text(file_path):
-
+    """
+    Extract text from various file types
+    Supports: PDF, DOCX, TXT
+    """
     if not os.path.exists(file_path):
         print("❌ File not found:", file_path)
         return ""
@@ -251,54 +253,135 @@ def extract_text(file_path):
         return extract_pdf_fast(file_path)
 
     elif file_path_lower.endswith(".docx"):
-        doc = docx.Document(file_path)
-        return "\n".join(p.text for p in doc.paragraphs)
+        return extract_docx(file_path)
 
     elif file_path_lower.endswith(".txt"):
-        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            return f.read()
+        return extract_txt(file_path)
 
     return ""
+
+
+# ======================================
+# EXTRACT FROM TXT
+# ======================================
+def extract_txt(file_path):
+    """Extract text from TXT file"""
+    try:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            text = f.read()
+        print(f"✅ TXT extracted: {len(text)} characters")
+        return text
+    except Exception as e:
+        print(f"❌ TXT extraction error: {e}")
+        return ""
+
+
+# ======================================
+# EXTRACT FROM DOCX
+# ======================================
+def extract_docx(file_path):
+    """Extract text from DOCX file"""
+    try:
+        doc = docx.Document(file_path)
+        text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
+        print(f"✅ DOCX extracted: {len(text)} characters")
+        return text
+    except Exception as e:
+        print(f"❌ DOCX extraction error: {e}")
+        return ""
 
 
 # ======================================
 # FAST PDF EXTRACTION (RENDER SAFE)
 # ======================================
 def extract_pdf_fast(file_path):
-
+    """
+    Extract text from PDF file
+    Samples first page, middle page, and last page for speed
+    """
     text = ""
 
     try:
         with pdfplumber.open(file_path) as pdf:
 
             total_pages = len(pdf.pages)
-
             print("📄 PDF Pages:", total_pages)
 
-            # sample pages only (FAST)
-            sample_indexes = set([
-                0,
-                total_pages // 2,
-                total_pages - 1
-            ])
+            if total_pages == 0:
+                return ""
 
-            for i in sample_indexes:
-                if 0 <= i < total_pages:
-                    page_text = pdf.pages[i].extract_text()
+            # Determine which pages to sample
+            pages_to_extract = set()
+            
+            # Always include first page
+            pages_to_extract.add(0)
+            
+            # Include last page if more than 1 page
+            if total_pages > 1:
+                pages_to_extract.add(total_pages - 1)
+            
+            # Include middle page if more than 2 pages
+            if total_pages > 2:
+                pages_to_extract.add(total_pages // 2)
+            
+            # If only a few pages, extract all
+            if total_pages <= 5:
+                pages_to_extract = set(range(total_pages))
 
-                    if page_text:
-                        text += page_text + "\n"
+            print(f"📄 Extracting pages: {sorted(pages_to_extract)}")
+
+            for page_num in sorted(pages_to_extract):
+                page = pdf.pages[page_num]
+                page_text = page.extract_text()
+                
+                if page_text:
+                    text += page_text + "\n\n"
 
     except Exception as e:
         print("❌ PDF extraction error:", e)
+        import traceback
+        traceback.print_exc()
         return ""
 
-    print("✅ Extracted characters:", len(text))
+    # Clean up text
+    text = ' '.join(text.split())
+    
+    print(f"✅ Extracted characters: {len(text)}")
+    
+    # Limit to first 8000 chars for performance
+    if len(text) > 8000:
+        text = text[:8000]
+        print(f"📏 Truncated to 8000 chars")
 
-    return text[:8000]
+    return text
 
 
-
+# ======================================
+# EXTRACT FROM UPLOADED FILE (DIRECT)
+# ======================================
+def extract_from_uploaded_file(uploaded_file):
+    """
+    Extract text directly from an uploaded file object
+    Saves temporarily then extracts
+    """
+    import tempfile
+    
+    # Create temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as tmp_file:
+        for chunk in uploaded_file.chunks():
+            tmp_file.write(chunk)
+        tmp_path = tmp_file.name
+    
+    try:
+        # Extract text from temporary file
+        text = extract_text(tmp_path)
+        return text
+    finally:
+        # Clean up temporary file
+        try:
+            os.unlink(tmp_path)
+        except:
+            pass
 
 # import pdfplumber
 # import docx

@@ -153,39 +153,51 @@
 
 import requests
 from bs4 import BeautifulSoup
-import random
 import re
 from rapidfuzz import fuzz
 
 # =====================================
-# GOOGLE CONFIG (YOUR KEYS)
+# TAVILY CONFIG (YOUR KEYS)
 # =====================================
-GOOGLE_API_KEY = "AIzaSyAN2q0ZQe1uB1sGwSMXtchoGtnjSPAiwZw"
-GOOGLE_CX = "b173eaadf448c4983"
+TAVILY_API_KEY = "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"
+TAVILY_SEARCH_URL = "https://api.tavily.com/search"
 
 # =====================================
-# GOOGLE SEARCH
+# TAVILY SEARCH
 # =====================================
-def search_google(query, num=3):
-    """Search Google using Custom Search API"""
-    url = "https://www.googleapis.com/customsearch/v1"
+def search_tavily(query, num=3):
+    """Search using Tavily API"""
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {TAVILY_API_KEY}"
+    }
     
-    params = {
-        "key": GOOGLE_API_KEY,
-        "cx": GOOGLE_CX,
-        "q": query[:200],  # Limit query length
-        "num": num
+    payload = {
+        "query": query[:200],
+        "search_depth": "basic",
+        "max_results": num,
+        "include_answer": False,
+        "include_raw_content": False,
+        "include_images": False
     }
     
     try:
-        response = requests.get(url, params=params, timeout=5)
+        response = requests.post(
+            TAVILY_SEARCH_URL,
+            json=payload,
+            headers=headers,
+            timeout=10
+        )
+        
         if response.status_code != 200:
+            print(f"Tavily API error: {response.status_code}")
             return []
         
         data = response.json()
-        return [item["link"] for item in data.get("items", [])]
+        return [result["url"] for result in data.get("results", [])]
+        
     except Exception as e:
-        print(f"Google search error: {e}")
+        print(f"Tavily search error: {e}")
         return []
 
 # =====================================
@@ -195,7 +207,7 @@ def fetch_page_content(url):
     """Fetch and parse webpage content"""
     try:
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         response = requests.get(url, headers=headers, timeout=5)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -203,20 +215,27 @@ def fetch_page_content(url):
         # Get title
         title = soup.title.string if soup.title else "Unknown"
         
-        # Get author
+        # Get author (try multiple methods)
         author = "Unknown"
         meta_author = soup.find("meta", {"name": "author"})
         if meta_author:
             author = meta_author.get("content", "Unknown")
+        else:
+            meta_author = soup.find("meta", {"property": "article:author"})
+            if meta_author:
+                author = meta_author.get("content", "Unknown")
         
-        # Get text
+        # Get text from paragraphs
         paragraphs = soup.find_all("p")
-        text = " ".join(p.get_text() for p in paragraphs[:20])  # First 20 paragraphs
+        text = " ".join(p.get_text() for p in paragraphs[:20])
+        
+        # Clean text
+        text = re.sub(r'\s+', ' ', text).strip()
         
         return {
             'title': title.strip(),
             'author': author.strip(),
-            'text': text[:3000],  # Limit text
+            'text': text[:3000],
             'url': url
         }
     except Exception as e:
@@ -224,42 +243,148 @@ def fetch_page_content(url):
         return None
 
 # =====================================
+# CALCULATE BREAKDOWN FROM SOURCES
+# =====================================
+def calculate_breakdown(plagiarism_score, sources):
+    """
+    Calculate the breakdown of identical, minor, paraphrased matches
+    based on source similarity scores
+    """
+    if not sources or plagiarism_score == 0:
+        return {
+            'identical': 0,
+            'minor': 0,
+            'paraphrased': 0,
+            'unique': 100
+        }
+    
+    # Initialize counters
+    identical = 0
+    minor = 0
+    paraphrased = 0
+    
+    # Analyze each source's similarity to determine distribution
+    for source in sources:
+        sim = source.get('similarity', 0)
+        
+        # Categorize based on similarity percentage
+        if sim >= 80:
+            # Very high similarity - likely identical or very close
+            identical += sim * 0.4
+            minor += sim * 0.3
+            paraphrased += sim * 0.3
+        elif sim >= 60:
+            # High similarity - minor changes
+            identical += sim * 0.2
+            minor += sim * 0.4
+            paraphrased += sim * 0.4
+        elif sim >= 40:
+            # Medium similarity - paraphrased with some minor changes
+            identical += sim * 0.1
+            minor += sim * 0.3
+            paraphrased += sim * 0.6
+        else:
+            # Low similarity - mostly paraphrased
+            identical += sim * 0.05
+            minor += sim * 0.15
+            paraphrased += sim * 0.8
+    
+    # Calculate totals
+    total_sim = sum(s.get('similarity', 0) for s in sources)
+    
+    if total_sim > 0:
+        # Scale to match the plagiarism score
+        identical = (identical / total_sim) * plagiarism_score
+        minor = (minor / total_sim) * plagiarism_score
+        paraphrased = (paraphrased / total_sim) * plagiarism_score
+    
+    # Round values
+    identical = round(identical)
+    minor = round(minor)
+    paraphrased = round(paraphrased)
+    
+    # Ensure sum equals plagiarism_score (adjust if rounding caused issues)
+    total = identical + minor + paraphrased
+    if total != plagiarism_score:
+        # Adjust paraphrased (largest category) to fix sum
+        paraphrased = plagiarism_score - identical - minor
+    
+    unique = 100 - plagiarism_score
+    
+    # Final validation
+    if paraphrased < 0:
+        paraphrased = 0
+        minor = plagiarism_score - identical
+        if minor < 0:
+            minor = 0
+            identical = plagiarism_score
+    
+    return {
+        'identical': max(0, identical),
+        'minor': max(0, minor),
+        'paraphrased': max(0, paraphrased),
+        'unique': max(0, unique)
+    }
+
+# =====================================
 # GLOBAL PLAGIARISM CHECK
 # =====================================
 def global_plagiarism_check(uploaded_text):
     """Main global plagiarism check function"""
-    print("🌍 Running global plagiarism check...")
+    print("🌍 Running global plagiarism check with Tavily...")
     
     if not uploaded_text or len(uploaded_text) < 100:
-        return 0, []
+        return {
+            'plagiarism_percentage': 0,
+            'breakdown': {
+                'identical': 0,
+                'minor': 0,
+                'paraphrased': 0,
+                'unique': 100
+            },
+            'sources': [],
+            'verdict': 'Original'
+        }
     
     # Take first 2000 chars for analysis
     text_sample = uploaded_text[:2000]
     
-    # Extract key sentences (longer sentences with more content)
+    # Extract key sentences
     sentences = re.split(r'[.!?]', text_sample)
     key_sentences = [
         s.strip() for s in sentences 
-        if 50 < len(s.strip()) < 200
-    ][:3]  # Max 3 sentences
+        if 40 < len(s.strip()) < 200
+    ][:3]
     
     if not key_sentences:
-        key_sentences = [text_sample[:200]]
+        chunks = []
+        for i in range(0, len(text_sample), 150):
+            chunk = text_sample[i:i+150].strip()
+            if len(chunk) > 50:
+                chunks.append(chunk)
+        key_sentences = chunks[:3]
     
     all_urls = set()
     all_matches = []
     max_score = 0
     
-    # Search for each key sentence
-    for sentence in key_sentences:
-        urls = search_google(sentence, num=2)
+    print(f"🔍 Searching for {len(key_sentences)} key phrases...")
+    
+    for idx, sentence in enumerate(key_sentences):
+        print(f"  📝 Phrase {idx+1}: {sentence[:50]}...")
+        urls = search_tavily(sentence, num=2)
+        
+        if not urls:
+            print(f"  ⚠️ No results found for phrase {idx+1}")
+            continue
+            
+        print(f"  ✅ Found {len(urls)} URLs")
         
         for url in urls:
             if url in all_urls:
                 continue
             all_urls.add(url)
             
-            # Fetch page content
             page_data = fetch_page_content(url)
             if not page_data or not page_data['text']:
                 continue
@@ -270,21 +395,18 @@ def global_plagiarism_check(uploaded_text):
                 page_data['text'][:1000].lower()
             )
             
-            # Scale similarity (0-100)
-            scaled_similarity = min(100, similarity // 2)
+            if similarity > max_score:
+                max_score = similarity
             
-            if scaled_similarity > max_score:
-                max_score = scaled_similarity
-            
-            if scaled_similarity > 30:  # Only include meaningful matches
+            if similarity > 20:
                 all_matches.append({
                     'url': url,
                     'title': page_data['title'],
                     'author': page_data['author'],
-                    'similarity': scaled_similarity
+                    'similarity': similarity
                 })
+                print(f"    📊 Match: {similarity}% - {page_data['title'][:50]}...")
             
-            # Early stop if very high similarity
             if max_score > 85:
                 break
     
@@ -298,5 +420,31 @@ def global_plagiarism_check(uploaded_text):
     
     unique_matches.sort(key=lambda x: x['similarity'], reverse=True)
     
-    print(f"✅ Global check complete. Max score: {max_score}%, Found: {len(unique_matches)} sources")
-    return max_score, unique_matches[:10]  # Return top 10
+    # Calculate final plagiarism score
+    if unique_matches:
+        # Use the highest match as the score
+        plagiarism_score = unique_matches[0]['similarity']
+    else:
+        plagiarism_score = 0
+    
+    # Calculate breakdown
+    breakdown = calculate_breakdown(plagiarism_score, unique_matches[:10])
+    
+    # Determine verdict
+    if plagiarism_score < 15:
+        verdict = 'Original'
+    elif plagiarism_score < 30:
+        verdict = 'Suspicious'
+    else:
+        verdict = 'Plagiarized'
+    
+    print(f"✅ Global check complete. Score: {plagiarism_score}%, Found: {len(unique_matches)} sources")
+    print(f"📊 Breakdown: Identical={breakdown['identical']}%, Minor={breakdown['minor']}%, Paraphrased={breakdown['paraphrased']}%, Unique={breakdown['unique']}%")
+    
+    # Return COMPLETE response with breakdown
+    return {
+        'plagiarism_percentage': plagiarism_score,
+        'breakdown': breakdown,
+        'sources': unique_matches[:10],
+        'verdict': verdict
+    }

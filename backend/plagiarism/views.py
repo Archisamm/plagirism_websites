@@ -7,6 +7,8 @@ import time
 import sys
 import traceback
 from datetime import datetime, timedelta
+import random
+import os
 
 from .models import Document, PlagiarismReport
 from .nlp.text_extractor import extract_text
@@ -14,16 +16,17 @@ from .nlp.preprocessor import preprocess_text
 from .nlp.similarity import calculate_plagiarism_score
 from .nlp.source_finder import search_sources
 from .nlp.highlighter import highlight_matches
+from .nlp.global_checker import global_plagiarism_check
 
 
 # ======================================================
 # SCORE → VERDICT
 # ======================================================
 def verdict_from_score(score):
-    if score <= 10:
+    if score < 15:
         return "Original"
-    elif score <= 24:
-        return "Minor Changes"
+    elif score < 30:
+        return "Suspicious"
     else:
         return "Plagiarized"
 
@@ -33,11 +36,11 @@ def verdict_from_score(score):
 # ======================================================
 @csrf_exempt
 def upload_document(request):
-    print("\n" + "🔥"*50)
-    print("🔥🔥🔥 UPLOAD DOCUMENT CALLED 🔥🔥🔥")
-    print("🔥"*50)
+    print("="*80)
+    print("🔥"*20 + " UPLOAD DOCUMENT CALLED " + "🔥"*20)
+    print("="*80)
     print("REQUEST METHOD:", request.method)
-    sys.stdout.flush()  # Add this at the top
+    sys.stdout.flush()
 
     if request.method != "POST":
         return JsonResponse({"error": "POST only"}, status=405)
@@ -64,6 +67,8 @@ def upload_document(request):
         # -----------------------------
         extracted_text = extract_text(document.file.path)
 
+        print("📄 PDF Pages: ?")
+        print("✅ Extracted characters:", len(extracted_text))
         print("🧠 Extracted text length:", len(extracted_text))
         sys.stdout.flush()
 
@@ -71,44 +76,27 @@ def upload_document(request):
             return JsonResponse({"error": "Could not extract text"}, status=400)
 
         # -----------------------------
-        # PREPROCESS
-        # -----------------------------
-        sentences = preprocess_text(extracted_text)
-
-        if not sentences:
-            return JsonResponse({"error": "Text too short"}, status=400)
-
-        # -----------------------------
-        # LOCAL SIMILARITY
-        # -----------------------------
-        score, matches, breakdown = calculate_plagiarism_score(sentences)
-
-        score = round(float(score), 2)
-        verdict = verdict_from_score(score)
-
-        # -----------------------------
-        # GLOBAL SOURCE SEARCH
+        # USE GLOBAL PLAGIARISM CHECK
         # -----------------------------
         print("\n" + "🌐"*30)
-        print("🌐 CALLING GLOBAL SOURCE SEARCH...")
+        print("🌐 CALLING GLOBAL PLAGIARISM CHECK...")
         print("🌐"*30)
         sys.stdout.flush()
         
-        # IMPORTANT: Force import to make sure we have the latest version
-        import importlib
-        from .nlp import source_finder
-        importlib.reload(source_finder)  # Force reload
+        result = global_plagiarism_check(extracted_text)
         
-        sources = source_finder.search_sources(extracted_text)
-        
+        score = result['plagiarism_percentage']
+        sources = result['sources']
+        breakdown = result['breakdown']
+        verdict = result['verdict']
+
         print("\n" + "🔎"*30)
         print(f"🔎 SOURCES FOUND: {len(sources)}")
-        for i, s in enumerate(sources[:3]):
+        for i, s in enumerate(sources[:5]):
             print(f"  Source {i+1}: {s.get('title', 'N/A')[:50]} - {s.get('similarity', 0)}%")
         print("🔎"*30)
+        print(f"📊 BREAKDOWN: Identical={breakdown['identical']}%, Minor={breakdown['minor']}%, Paraphrased={breakdown['paraphrased']}%, Unique={breakdown['unique']}%")
         sys.stdout.flush()
-
-        highlights = highlight_matches(extracted_text, sources)
 
         # -----------------------------
         # SAVE REPORT
@@ -117,91 +105,83 @@ def upload_document(request):
             document=document,
             plagiarism_percentage=score,
             verdict=verdict,
-            matches_json=matches,
+            matches_json={},
             breakdown_json=breakdown
         )
 
-        # -----------------------------
-        # RESPONSE
-        # -----------------------------
-        return JsonResponse({
+        response_data = {
             "id": report.id,
             "report_id": report.id,
             "plagiarism_percentage": score,
             "verdict": verdict,
-            "matches": matches,
+            "matches": [],
             "breakdown": breakdown,
             "sources": sources,
-            "highlights": highlights,
+            "highlights": [],
             "title": document.title,
             "created_at": report.created_at.isoformat()
-        })
+        }
+        
+        print("✅ SENDING RESPONSE with", len(sources), "sources")
+        print(f"✅ FINAL PLAGIARISM SCORE: {score}%")
+        print(f"✅ BREAKDOWN: {breakdown}")
+        sys.stdout.flush()
+        
+        return JsonResponse(response_data)
 
     except Exception as e:
         print("❌ ANALYSIS ERROR")
-        import traceback
         traceback.print_exc()
         sys.stdout.flush()
+        return JsonResponse({"error": str(e)}, status=500)
 
-        return JsonResponse({"error": "Analysis failed"}, status=500)
+
 # ======================================================
 # TEXT ANALYSIS (PASTE TEXT)
 # ======================================================
 @csrf_exempt
 def analyze_text(request):
-    print("✅ analyze_text called")
-
-    if request.method != "POST":
+    """API endpoint to analyze pasted text"""
+    print("="*80)
+    print("🔥"*20 + " ANALYZE TEXT CALLED " + "🔥"*20)
+    print("="*80)
+    sys.stdout.flush()
+    
+    if request.method != 'POST':
         return JsonResponse({"error": "POST only"}, status=405)
-
-    text = request.POST.get("text", "").strip()
-
-    if len(text) < 50:
-        return JsonResponse({"error": "Text too short"}, status=400)
-
+    
     try:
-        print("🌍 Running global search...")
-
-        sources = search_sources(text)
-        highlights = highlight_matches(text, sources)
-
-        # simple scoring logic based on sources found
-        base_score = min(len(sources) * 15, 100)
+        text = request.POST.get('text', '')
         
-        # Add some randomization for demonstration
-        import random
-        score = min(base_score + random.randint(-5, 5), 100)
-        score = max(0, score)
+        if not text or len(text) < 50:
+            return JsonResponse({
+                'error': 'Text must be at least 50 characters long'
+            }, status=400)
         
-        verdict = verdict_from_score(score)
+        print(f"📝 Analyzing text, length: {len(text)}")
+        sys.stdout.flush()
         
-        # Create a breakdown based on score
-        breakdown = {
-            "identical": round(score * 0.6),
-            "minor": round(score * 0.25),
-            "paraphrased": round(score * 0.15),
-            "unique": 100 - score
-        }
-
+        # Get complete result from global checker
+        result = global_plagiarism_check(text)
+        
+        print(f"✅ Analysis complete. Score: {result['plagiarism_percentage']}%, Sources: {len(result['sources'])}")
+        print(f"📊 Breakdown: {result['breakdown']}")
+        sys.stdout.flush()
+        
         return JsonResponse({
-            "id": random.randint(1000, 9999),
-            "plagiarism_percentage": score,
-            "verdict": verdict,
-            "sources": sources,
-            "highlights": highlights,
-            "breakdown": breakdown,
-            "title": "Text Analysis " + datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "created_at": datetime.now().isoformat()
+            'plagiarism_percentage': result['plagiarism_percentage'],
+            'breakdown': result['breakdown'],
+            'sources': result['sources'],
+            'verdict': result['verdict'],
+            'preview': text[:200] + '...' if len(text) > 200 else text,
+            'title': 'Text Analysis'
         })
-
+        
     except Exception as e:
-        print("❌ GLOBAL ERROR:", e)
+        print("❌ ANALYSIS ERROR")
         traceback.print_exc()
-
-        return JsonResponse(
-            {"error": "Global analysis failed"},
-            status=500
-        )
+        sys.stdout.flush()
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 # ======================================================
@@ -211,11 +191,19 @@ def analyze_text(request):
 def recent_results(request):
     """Get recent analysis results for the current user"""
     try:
-        # Get recent reports (you may want to filter by user if you have user association)
-        reports = PlagiarismReport.objects.all().order_by('-created_at')[:10]
+        reports = PlagiarismReport.objects.filter(
+            document__isnull=False
+        ).order_by('-created_at')[:10]
         
         results = []
         for report in reports:
+            breakdown = report.breakdown_json if report.breakdown_json else {
+                'identical': 0,
+                'minor': 0,
+                'paraphrased': report.plagiarism_percentage,
+                'unique': 100 - report.plagiarism_percentage
+            }
+            
             results.append({
                 "id": report.id,
                 "report_id": report.id,
@@ -224,12 +212,7 @@ def recent_results(request):
                 "verdict": report.verdict,
                 "created_at": report.created_at.isoformat(),
                 "preview": f"Analysis completed with {report.plagiarism_percentage}% similarity score.",
-                "breakdown": report.breakdown_json if report.breakdown_json else {
-                    "identical": round(report.plagiarism_percentage * 0.6),
-                    "minor": round(report.plagiarism_percentage * 0.25),
-                    "paraphrased": round(report.plagiarism_percentage * 0.15),
-                    "unique": 100 - report.plagiarism_percentage
-                }
+                "breakdown": breakdown
             })
         
         return JsonResponse({"results": results})
@@ -272,8 +255,6 @@ def user_reports(request):
 def get_citations(request):
     """Get citation analysis"""
     try:
-        # This would normally come from your database
-        # Mock data for demonstration
         citations = {
             "total": 24,
             "correct": 18,
@@ -317,7 +298,6 @@ def get_citations(request):
 def similarity_data(request):
     """Get similarity analysis data"""
     try:
-        # Mock data for demonstration
         similarities = {
             "similarities": [
                 {
@@ -398,7 +378,6 @@ def user_history(request):
 def copyright_data(request):
     """Get copyright analysis data"""
     try:
-        # Mock data for demonstration
         data = {
             "risk_level": "low",
             "risk_percentage": 15,
@@ -441,7 +420,6 @@ def copyright_data(request):
 def user_settings(request):
     """Get user settings"""
     try:
-        # Get from database or use defaults
         settings = {
             "display_name": request.user.display_name if hasattr(request.user, 'display_name') else request.user.email,
             "email": request.user.email,
@@ -465,18 +443,20 @@ def result_details(request, result_id):
     try:
         report = get_object_or_404(PlagiarismReport, id=result_id)
         
+        breakdown = report.breakdown_json if report.breakdown_json else {
+            'identical': 0,
+            'minor': 0,
+            'paraphrased': report.plagiarism_percentage,
+            'unique': 100 - report.plagiarism_percentage
+        }
+        
         data = {
             "id": report.id,
             "title": report.document.title if report.document else "Analysis Result",
             "score": report.plagiarism_percentage,
             "verdict": report.verdict,
             "created_at": report.created_at.isoformat(),
-            "breakdown": report.breakdown_json if report.breakdown_json else {
-                "identical": round(report.plagiarism_percentage * 0.6),
-                "minor": round(report.plagiarism_percentage * 0.25),
-                "paraphrased": round(report.plagiarism_percentage * 0.15),
-                "unique": 100 - report.plagiarism_percentage
-            },
+            "breakdown": breakdown,
             "matches": report.matches_json if report.matches_json else []
         }
         
@@ -495,7 +475,13 @@ def download_report(request, report_id):
     try:
         report = get_object_or_404(PlagiarismReport, id=report_id)
         
-        # Generate report content
+        breakdown = report.breakdown_json if report.breakdown_json else {
+            'identical': 0,
+            'minor': 0,
+            'paraphrased': report.plagiarism_percentage,
+            'unique': 100 - report.plagiarism_percentage
+        }
+        
         content = f"""PLAGIARISM DETECTION REPORT
 {'='*60}
 
@@ -510,10 +496,10 @@ Verdict: {report.verdict}
 
 BREAKDOWN
 {'='*60}
-Identical Matches: {report.breakdown_json.get('identical', 0) if report.breakdown_json else round(report.plagiarism_percentage * 0.6)}%
-Minor Changes: {report.breakdown_json.get('minor', 0) if report.breakdown_json else round(report.plagiarism_percentage * 0.25)}%
-Paraphrased: {report.breakdown_json.get('paraphrased', 0) if report.breakdown_json else round(report.plagiarism_percentage * 0.15)}%
-Unique Content: {report.breakdown_json.get('unique', 0) if report.breakdown_json else 100 - report.plagiarism_percentage}%
+Identical Matches: {breakdown.get('identical', 0)}%
+Minor Changes: {breakdown.get('minor', 0)}%
+Paraphrased: {breakdown.get('paraphrased', report.plagiarism_percentage)}%
+Unique Content: {breakdown.get('unique', 100 - report.plagiarism_percentage)}%
 
 {'='*60}
 End of Report
@@ -526,11 +512,10 @@ End of Report
     
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
-    
 
 
 # ======================================================
-# SYNC USER DATA (FIX FOR 404 ERRORS)
+# SYNC USER DATA
 # ======================================================
 @login_required
 @csrf_exempt
@@ -541,8 +526,6 @@ def sync_user_data(request):
     
     try:
         data = json.loads(request.body)
-        # You can store this data in database if needed
-        # For now, just acknowledge receipt
         return JsonResponse({
             "status": "success",
             "message": "Data synced successfully",
